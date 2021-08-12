@@ -1,0 +1,18 @@
+<!--TBL_RESOLUCION-->
+<tr style="font-size: 12px;">
+    <td>{resolucion-denominacion}</td>
+    <td>{resolucion-fecha_desde} / {resolucion-fecha_hasta}</td>
+    <td>{resolucion-descuento}%</td>
+    <td>{resolucion-recarga}%</td>
+    <td>{resolucion-detalle}</td>
+    <td><span class="label label-{resolucion-class_estado}" style="font-size: 13px;"><i class="fa fa-{resolucion-icon_estado}"></i></span></td>
+    <td>
+        <center>
+        	<a href="{url_app}/resolucion/{resolucion-url_estado}/{resolucion-resolucion_id}" title="Cambiar estado">
+        		<span class="label label-info" style="font-size: 13px;">{resolucion-lbl_btn_estado}</span>
+        	</a>
+            <button class="btn btn-warning btn-xs" onclick="confirma_formulario(3, '{url_app}/resolucion/editar/{resolucion-resolucion_id}');" title="Editar título"><i class="fa fa-edit"></i></button>
+        </center>
+    </td>
+</tr>
+<!--TBL_RESOLUCION-->

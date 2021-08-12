@@ -1,0 +1,156 @@
+<div class="col-lg-12">
+    <ul class="breadcrumb">
+        <li><a href="{url_app}/usuario/panel"><i class="fa fa-home"></i> HOME</a></li>
+        <li><a href="{url_app}/matriculado/panel">Panel Matriculados</a></li>
+    </ul>
+</div>
+<div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+        <div class="x_title">
+            <h2><i class="fa fa-plus-square"></i>&nbsp;&nbsp; Agregar matriculado</h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+            <div class=" form">
+                <form class="form" id="formulario_guardar" method="post" action="{url_app}/matriculado/guardar">
+                    <div class="form-group col-lg-6">
+                        <label>Apellido</label>
+                        <input type="text" class="form-control" name="apellido" id="apellido" required>
+                    </div>
+                    <div class="form-group col-lg-6">
+                        <label>Nombre</label>
+                        <input type="text" class="form-control" name="nombre" id="nombre" required>
+                    </div>
+                    <div class="form-group col-lg-2">
+                        <label>Tipo</label>
+                        <select class="form-control m-bot15" name="documentotipo" id="documentotipo" required>
+                            {slt_documentotipo}
+                        </select>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <label>Número</label>    
+                        <input type="number" name="documento" id="documento" class="form-control">                        
+                    </div>
+                    <div class="form-group col-lg-6">
+                        <label>Provincia</label>
+                        <select class="form-control m-bot15" name="provincia" required>
+                            <option value="12">La Rioja</option>
+                            {slt_provincia}
+                        </select>
+                    </div>
+                    <div class="form-group col-lg-8">
+                        <div class="form-group">
+                            <label>Barrio</label>
+                            <input type="text" class="form-control" id="barrio" name="barrio" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Domicilio</label>
+                            <input type="text" class="form-control" id="domicilio" name="domicilio" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Teléfono</label>
+                            <input type="text" class="form-control" id="telefono" name="infocontacto[Teléfono]" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Celular</label>
+                            <input type="text" class="form-control" id="celular" name="infocontacto[Celular]" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="text" class="form-control" id="correoelectronico" name="infocontacto[Email]" required>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <div class="form-group">
+                            <label>Código Postal</label>
+                            <input type="text" class="form-control" id="codigopostal" name="codigopostal" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Observación</label>
+                            <textarea class="form-control" id="observacion" name="observacion" rows="7"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-12" style="margin-top: 2%;" align="right">
+                        <a href="#" class="btn btn-app" onclick="verificarMatriculado();"> <i class="fa fa-save"></i> Agregar </a>
+                    </div>
+                </form>
+            </div>            
+        </div>
+    </div>
+</div>
+<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" id="sistema_alertas">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabel">ATENCIÓN! Sistema de Alertas!</h4>
+            </div>
+            <div class="modal-body">
+                <div class="col-lg-12">
+                    <div class="col-lg-2">
+                        <center><h1><i class="fa fa-exclamation-triangle" style="color: #ff6c60;"></i></h1></center>
+                    </div>
+                    <div class="col-lg-10"><h5 id="msj_alerta_modal"></h5></div>
+                </div>
+                <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+function verificarMatriculado() {
+    var array = new Array();
+    var flag_array = 0;
+
+    var apellido = document.getElementById("apellido").value;
+    if (apellido == null || apellido.length == 0 || apellido == "") {
+        flag_array = 1;
+        array.push("<strong>[ERROR]</strong> Por favor complete el APELLIDO.");
+    }
+
+    var nombre = document.getElementById("nombre").value;
+    if (nombre == null || nombre.length == 0 || nombre == "") {
+        flag_array = 1;
+        array.push("<strong>[ERROR]</strong> Por favor complete el NOMBRE.");
+    }
+    
+    var documento = document.getElementById("documento").value;
+    if (documento == null || documento.length == 0 || documento == "") {
+        flag_array = 1;
+        array.push("<strong>[ERROR]</strong> Por favor complete el número de DOCUMENTO.");
+    }
+
+    var documentotipo = document.getElementById("documentotipo");
+    var documentotipo_id = documentotipo.options[documentotipo.selectedIndex].value;
+    if (documentotipo_id == null || documentotipo_id.length == 0 || documentotipo_id == "" || documentotipo_id == 0) {
+        flag_array = 1;
+        array.push("<strong>[ERROR]</strong> Por favor seleccione el TIPO DE DOCUMENTO.");
+    }
+    
+    if (flag_array == 0) {
+        var flag = $.ajax({
+            url: '{url_app}/matriculado/verifica_documento_ajax/' + documento,
+                dataType: 'text',
+                async: false
+        }).responseText;
+        
+        if (flag > 0) {
+            $('#sistema_alertas').modal('show');
+            document.getElementById("msj_alerta_modal").innerHTML = "<strong>[ERROR]</strong> El DOCUMENTO ya se encuentra cargado en el sistema.";
+        } else {
+            document.getElementById("formulario_guardar").submit();
+        }
+    } else {
+        var mensaje = array.join("<br><br>");
+        $('#sistema_alertas').modal('show');
+        document.getElementById("msj_alerta_modal").innerHTML = mensaje;
+    }
+}
+</script>

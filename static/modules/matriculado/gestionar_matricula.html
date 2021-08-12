@@ -1,0 +1,343 @@
+<!--DATA TABLE-->
+<link href="{url_static}vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
+<link href="{url_static}vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
+<!--DATA TABLE-->
+<div class="col-lg-12">
+    <ul class="breadcrumb">
+        <li><a href="{url_app}/usuario/panel"><i class="fa fa-home"></i> HOME</a></li>
+        <li><a href="{url_app}/{objeto}/panel">Panel Matriculados</a></li>
+        <li><a href="{url_app}/{objeto}/matriculas/{matriculado-matriculado_id}">Matrículas: {matriculado-apellido} {matriculado-nombre}</a></li>
+    </ul>
+</div>
+<div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
+    <div class="x_panel">
+        <div class="x_content">
+            <div class="pricing">
+                <div class="title">
+                    <h5>MAT {matricula-matricula} - {titulo-denominacion}</h5>
+                    <h3>{matriculado-apellido} {matriculado-nombre}</h3>
+                </div>
+                <div class="x_content">
+                    <div class="">
+                        <div class="pricing_features">
+                            <ul class="list-unstyled text-left">
+                                <li><i class="fa fa-check text-success"></i> <strong> Documento:</strong> {documentotipo-denominacion} {matriculado-documento}</li>
+                                <li><i class="fa fa-check text-success"></i> <strong> Provincia:</strong> {matriculado-codigopostal} - {provincia-denominacion}</li>
+                                <li><i class="fa fa-check text-success"></i> <strong> Barrio:</strong> {matriculado-barrio}</li>
+                                <li><i class="fa fa-check text-success"></i> <strong> Domicilio:</strong> {matriculado-domicilio}</li>
+                                {lst_infocontacto}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+<div class="col-lg-7 col-md-7 col-sm-12 col-xs-12" id="div_formulario_matricula">
+    <div class="col-lg-4 col-lg-offset-8 col-md-4 col-md-offset-8 col-sm-12 col-xs-12" id="div_btn_gestionar_habilitacion">
+        <button type="button" class="btn btn-dark btn-sm" style=" width: 100%;" id="btn_gestionar_habilitacion" onClick="gestionarHabilitacion();">Gestionar Habilitaciones</button>
+        <button type="button" class="btn btn-danger btn-sm" style="display: none; width: 100%;" id="btn_volver_cuentacorriente" onClick="volverCuentaCorriente();"><i class="fa fa-caret-square-o-left"></i> Ver Cuenta Corriente</button>
+    </div>
+    <div class="x_panel" id="div_tbl_cuentacorriente">
+        <div class="x_title">
+            <h2><i class="fa fa-table"></i>&nbsp;&nbsp; Cuenta Corriente Matriculado</h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+            <table id="tbl_matricula" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Cuotas</th>
+                        <th>Fecha</th>
+                        <th>Año</th>
+                        <th>Hab.</th>
+                        <th>Tomo</th>
+                        <th>Concepto</th>
+                        <th>Tipo Pago</th>
+                        <th>Abono</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {tbl_cuentacorrientematriculado}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="x_panel" id="div_gestionar_habilitacion" style="display: none;">
+        <div class="x_title">
+            <h2><i class="fa fa-table"></i>&nbsp;&nbsp; Gestionar Habilitación</h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+            <div class=" form">
+                <form class="form" id="formulario_guardar" method="post" action="{url_app}/matriculado/guardar_habilitacion">
+                    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                            <label>Año</label>
+                            <input type="number" class="form-control" name="anio" id="anio" required>
+                        </div>
+                        <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                            <label>Habilitación</label>
+                            <input type="text" class="form-control" name="habilitacion" id="habilitacion" required>
+                        </div>
+                        <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                            <label>Tomo</label>
+                            <input type="text" class="form-control" name="tomo" id="tomo" required>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="form-group col-lg-4 col-lg-offset-4 col-md-12 col-sm-12 col-xs-12">
+                            <label>Cantidad Cuotas</label>
+                            <input type="number" value="1" min="1" class="form-control" name="total_cuotas" id="total_cuotas" onChange="armarPlanCuotas();" required>
+                        </div>
+                        <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                            <label>Valor Matrícula</label>
+                            <input type="number" value="{titulo-valor_matricula}" class="form-control" name="valor_matricula" id="valor_matricula" readonly required>
+                        </div>                    
+                    </div>                    
+                    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" id="div_plan_cuotas"></div>
+                    <div class="form-group col-lg-12" style="margin-top: 2%;" align="right">
+                        <input type="hidden" name="matriculado_id" id="hab_matriculado_id" value="{matriculado-matriculado_id}">
+                        <input type="hidden" name="matricula_id" id="hab_matricula_id" value="{matricula-matricula_id}">
+                        <input type="hidden" name="valor_matricula" value="{titulo-valor_matricula}">
+                        <button type="button" class="btn btn-app" onClick="verificaHabilitacion();"><i class="fa fa-save"></i> Agregar</button>
+                    </div>
+                </form>
+            </div>  
+        </div>
+    </div>
+</div>
+<div class="col-lg-7 col-md-7 col-sm-12 col-xs-12" id="div_form_abonar" style="display: none;"></div>
+<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" id="sistema_alertas_error">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabel">ATENCIÓN! Sistema de Alertas!</h4>
+            </div>
+            <div class="modal-body">
+                <div class="col-lg-12">
+                    <div class="col-lg-2">
+                        <center><h1><i class="fa fa-exclamation-triangle" style="color: #ff6c60;"></i></h1></center>
+                    </div>
+                    <div class="col-lg-10"><h5 id="msj_alerta_modal"></h5></div>
+                </div>
+                <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Datatables -->
+<script src="{url_static}vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="{url_static}vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="{url_static}vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="{url_static}vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#tbl_matricula').dataTable( {
+            "aaSorting": [[ 2, "desc" ], [ 0, "asc" ]]
+          , "iDisplayLength":10
+        } );
+    } );
+
+    var valor_matricula = {titulo-valor_matricula};
+
+    function traerFormAbonar(matriculado_id, matricula_id, cuentacorrientematriculado_id) {
+        var formAbonar = $.ajax({
+            url: '{url_app}/matriculado/traer_form_abonar_ajax/' + matriculado_id + '@' + matricula_id + '@' + cuentacorrientematriculado_id,
+            dataType: 'text',
+            async: false
+        }).responseText;
+
+        document.getElementById('btn_gestionar_habilitacion').style.display = 'none';
+        document.getElementById('btn_volver_cuentacorriente').style.display = 'inline-block';
+        document.getElementById('div_gestionar_habilitacion').style.display = 'none';
+        document.getElementById('div_tbl_cuentacorriente').style.display = 'none';
+        document.getElementById('div_form_abonar').innerHTML = formAbonar;
+        document.getElementById('div_form_abonar').style.display = 'block';
+    }
+
+    function armarPlanCuotas() {
+        var div_plan_cuotas = document.getElementById('div_plan_cuotas');
+        div_plan_cuotas.innerHTML = "";
+        var total_cuotas = document.getElementById('total_cuotas').value;
+
+        if (total_cuotas > 1) {
+            var valor_cuota = valor_matricula / total_cuotas;
+            valor_cuota = parseFloat(valor_cuota);
+            valor_cuota = valor_cuota.toFixed(2);
+
+            for (var i = 1; i <= total_cuotas; i++) {
+                var divCuota = document.createElement("div");
+                divCuota.setAttribute("class", "form-group col-lg-12 col-md-12 col-sm-12 col-xs-12");
+
+                var divInputCuota = document.createElement("div");
+                divInputCuota.setAttribute("class", "form-group col-lg-6 col-md-12 col-sm-12 col-xs-12");
+
+                var divInputVencimiento = document.createElement("div");
+                divInputVencimiento.setAttribute("class", "form-group col-lg-6 col-md-12 col-sm-12 col-xs-12");
+
+                var lblInputCuota = document.createElement("label");
+                lblInputCuota.innerHTML = "Cuota " + i;
+
+                var lblInputVencimiento = document.createElement("label");
+                lblInputVencimiento.innerHTML = "Vencimiento " + i;
+
+                var inputValorCuota = document.createElement("input");
+                inputValorCuota.setAttribute("type", "number");
+                inputValorCuota.setAttribute("name", "cuota[" + i + "]");
+                inputValorCuota.setAttribute("value", valor_cuota);
+                inputValorCuota.setAttribute("class", "form-control");
+
+                var inputVencimientoCuota = document.createElement("input");
+                inputVencimientoCuota.setAttribute("type", "date");
+                inputVencimientoCuota.setAttribute("name", "vencimiento[" + i + "]");
+                inputVencimientoCuota.setAttribute("class", "form-control");
+
+                divInputCuota.appendChild(lblInputCuota);
+                divInputCuota.appendChild(inputValorCuota);
+                divInputVencimiento.appendChild(lblInputVencimiento);
+                divInputVencimiento.appendChild(inputVencimientoCuota);
+
+                divCuota.appendChild(divInputCuota);
+                divCuota.appendChild(divInputVencimiento);
+                div_plan_cuotas.appendChild(divCuota);
+            };
+        }
+    }
+
+    function controlaTipoPago() {
+        var tipopago = document.getElementById("tipopago");
+        var tipopago_id = tipopago.options[tipopago.selectedIndex].value;
+        switch(tipopago_id) {
+            case '2':
+                console.log(tipopago_id);
+                document.getElementById('div_numero_cheque').style.display = 'block';
+                document.getElementById('div_cheque_fecha_vencimiento').style.display = 'block';
+                document.getElementById('div_numero_transferencia').style.display = 'none';
+                break;
+            case '3':
+                document.getElementById('div_numero_cheque').style.display = 'none';
+                document.getElementById('div_cheque_fecha_vencimiento').style.display = 'none';
+                document.getElementById('div_numero_transferencia').style.display = 'block';
+                break;
+            default:
+                document.getElementById('div_numero_cheque').style.display = 'none';
+                document.getElementById('div_cheque_fecha_vencimiento').style.display = 'none';
+                document.getElementById('div_numero_transferencia').style.display = 'none';
+                break;
+        }
+    }
+
+    function calculaValorResolucion() {
+        var resolucion = document.getElementById("resolucion");
+        var resolucion_id = resolucion.options[resolucion.selectedIndex].value;
+        
+        var resultado_resolucion = $.ajax({
+            url: '{url_app}/matriculado/traer_valor_resolucion_ajax/' + resolucion_id,
+            dataType: 'text',
+            async: false
+        }).responseText;
+
+        var elementos_resolucion = resultado_resolucion.split('@');
+        var accion = parseInt(elementos_resolucion[0]);
+        var valor = elementos_resolucion[1];
+        var valor_abonado = document.getElementById('valor_abonado').value;
+        var original_valor_abonado = document.getElementById('original_valor_abonado').value;
+        
+        valor = parseFloat(valor);
+        valor_matricula = parseFloat(valor_matricula);
+        original_valor_abonado = parseFloat(original_valor_abonado);
+        var valor_porcentaje = valor * valor_matricula / 100;
+        switch(accion) {
+            case 1:
+                var nuevo_valor = original_valor_abonado + valor_porcentaje;
+                break;
+            case 2:
+                var nuevo_valor = original_valor_abonado - valor_porcentaje;
+                break;
+            default:
+                var nuevo_valor = original_valor_abonado;
+                break;
+        }
+
+        document.getElementById('valor_abonado').value = nuevo_valor.toFixed(2);
+    }
+
+    function verificaHabilitacion() {
+        var array = new Array();
+        var flag_array = 0;
+        var matriculado_id = document.getElementById("hab_matriculado_id").value;
+        var matricula_id = document.getElementById("hab_matricula_id").value;
+
+        var anio = document.getElementById("anio").value;
+        if (anio == null || anio.length == 0 || anio == "") {
+            flag_array = 1;
+            array.push("<strong>[ERROR]</strong> Por favor complete el AÑO.");
+        }
+
+        var habilitacion = document.getElementById("habilitacion").value;
+        if (habilitacion == null || habilitacion.length == 0 || habilitacion == "") {
+            flag_array = 1;
+            array.push("<strong>[ERROR]</strong> Por favor complete la HABILITACIÓN.");
+        }
+
+        var tomo = document.getElementById("tomo").value;
+        if (tomo == null || tomo.length == 0 || tomo == "") {
+            flag_array = 1;
+            array.push("<strong>[ERROR]</strong> Por favor complete el TOMO.");
+        }
+
+        if (flag_array == 0) {
+            var flag = $.ajax({
+                url: '{url_app}/matriculado/verifica_habilitacion_ajax/' + matriculado_id + '@' + matricula_id + '@' + anio,
+                    dataType: 'text',
+                    async: false
+            }).responseText;
+            console.log(flag);
+            
+            if (parseInt(flag) > 0) {
+                $('#sistema_alertas_error').modal('show');
+                document.getElementById("msj_alerta_modal").innerHTML = "<strong>[ERROR]</strong> Ya posee una habilitación en curso.";
+            } else {
+                document.getElementById("formulario_guardar").submit();
+            }
+        } else {
+            var mensaje = array.join("<br><br>");
+            $('#sistema_alertas_error').modal('show');
+            document.getElementById("msj_alerta_modal").innerHTML = mensaje;
+        }
+    }
+
+    function gestionarHabilitacion() {
+        document.getElementById('btn_gestionar_habilitacion').style.display = 'none';
+        document.getElementById('btn_volver_cuentacorriente').style.display = 'inline-block';
+        document.getElementById('div_gestionar_habilitacion').style.display = 'inline-block';
+        document.getElementById('div_tbl_cuentacorriente').style.display = 'none';
+        document.getElementById('div_form_abonar').innerHTML = '';
+        document.getElementById('div_form_abonar').style.display = 'none';
+    }
+
+    function volverCuentaCorriente() {
+        document.getElementById('btn_gestionar_habilitacion').style.display = 'inline-block';
+        document.getElementById('btn_volver_cuentacorriente').style.display = 'none';
+        document.getElementById('div_gestionar_habilitacion').style.display = 'none';
+        document.getElementById('div_tbl_cuentacorriente').style.display = 'inline-block';
+        document.getElementById('div_form_abonar').innerHTML = '';
+        document.getElementById('div_form_abonar').style.display = 'none';
+    }
+</script>

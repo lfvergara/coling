@@ -1,0 +1,197 @@
+<!--DATA TABLE-->
+<link href="{url_static}vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
+<link href="{url_static}vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
+<!--DATA TABLE-->
+<div class="col-lg-12" style="padding-bottom: 0.5%;">
+  <button type="button" class="btn btn-xs btn-danger pull-right" onclick="location.href='{url_home}';" style="margin-left:0.3%;"><i class="fa fa-home"></i> Volver a panel</button>
+</div>
+<div class="col-lg-4">
+    <section class="panel panel-primary">
+        <header class="panel-heading">
+            <i class="fa fa-plus-square"></i>&nbsp;&nbsp; Agregar Ítem de 1er Nivel
+        </header>
+        <div class="panel-body">
+            <div class="col-lg-12">
+                <div class=" form">
+                    <form class="cmxform form-horizontal tasi-form" id="formulario_guardar" method="post" action="{url_app}/menu/guardar">
+                        <div class="col-lg-6">
+                            <label>Denominación</label>
+                            <input type="text" class="form-control" id="denominacion" name="denominacion" required>
+                        </div>
+                        <div class="col-lg-6">
+                            <label>Icon (font awesome)</label>
+                            <input type="text" class="form-control" id="icon" name="icon" required>
+                        </div>
+                        <div class="col-lg-12">
+                            <label>URL</label>
+                            <input type="text" class="form-control" id="url" name="url" required>
+                        </div>
+                        <div class="col-lg-12" style="margin-top: 2%;" align="right">
+                            <button class="btn btn-danger" type="submit"><i class="fa fa-save"></i> Agregar </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="panel">
+        <header class="panel-heading"><i class="fa fa-table"></i>&nbsp;&nbsp; Ítems de 1er Nivel</header>
+        <div class="panel-body">
+            <div class="adv-table">
+                <table class="display table table-bordered table-striped" id="tbl_menu">
+                    <thead>
+                        <tr>
+                            <th>Denominación</th>
+                            <th>Icon</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {tbl_menu}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</div>
+<div class="col-lg-4">
+    <section class="panel panel-primary">
+        <header class="panel-heading">
+            <i class="fa fa-plus-square"></i>&nbsp;&nbsp; Agregar Ítem de 2do Nivel
+        </header>
+        <div class="panel-body">
+            <div class="col-lg-12">
+                <div class=" form">
+                    <form class="cmxform form-horizontal tasi-form" id="formulario_guardar" method="post" action="{url_app}/submenu/guardar">
+                        <div class="col-lg-6">
+                            <label>Denominación</label>
+                            <input type="text" class="form-control" id="denominacion" name="denominacion" required>
+                        </div>
+                        <div class="col-lg-6">
+                            <label>Dependencia 1er nivel</label>
+                            <select class="form-control m-bot15" name="menu" required>
+                                {slt_menu}
+                            </select>
+                        </div>
+                        <div class="col-lg-6">
+                            <label>Icon (font awesome)</label>
+                            <input type="text" class="form-control" id="icon" name="icon" required>
+                        </div>
+                        <div class="col-lg-6">
+                            <label>URL</label>
+                            <input type="text" class="form-control" id="url" name="url" required>
+                        </div>
+                        <div class="col-lg-12" style="margin-top: 2%;" align="right">
+                            <button class="btn btn-danger" type="submit"><i class="fa fa-save"></i> Agregar </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="panel">
+        <header class="panel-heading"><i class="fa fa-table"></i>&nbsp;&nbsp; Ítems de 2do Nivel</header>
+        <div class="panel-body">
+            <div class="adv-table">
+                <table class="display table table-bordered table-striped" id="tbl_submenu">
+                    <thead>
+                        <tr>
+                            <th>1er Nivel</th>
+                            <th>SubMenú</th>
+                            <th>Icon</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {tbl_submenu}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</div>
+<div class="col-lg-4">
+    <section class="panel panel-primary">
+        <header class="panel-heading">
+            <i class="fa fa-edit"></i>&nbsp;&nbsp; Editar Ítem de 3er Nivel
+        </header>
+        <div class="panel-body">
+            <div class="col-lg-12">
+                <div class=" form">
+                    <form class="cmxform form-horizontal tasi-form" id="formulario_guardar" method="post" action="{url_app}/item/guardar">
+                        <div class="col-lg-6">
+                            <label>Denominación</label>
+                            <input type="text" class="form-control" id="denominacion" name="denominacion" value="{item-denominacion}" required>
+                        </div>
+                        <div class="col-lg-6">
+                            <label>Dependencia 2do nivel</label>
+                            <select class="form-control m-bot15" name="submenu" required>
+                                <option value="{submenu-submenu_id}">{submenu-denominacion}</option>
+                                {slt_submenu}
+                            </select>
+                        </div>
+                        <div class="col-lg-6">
+                            <label>Detalle</label>
+                            <input type="text" class="form-control" id="detalle" name="detalle" value="{item-detalle}" required>
+                        </div>
+                        <div class="col-lg-6">
+                            <label>URL</label>
+                            <input type="text" class="form-control" id="url" name="url" value="{item-url}" required>
+                        </div>
+                        <div class="col-lg-12" style="margin-top: 2%;" align="right">
+                            <input type="hidden" name="item_id" value="{item-item_id}">
+                            <button class="btn btn-danger" type="submit"><i class="fa fa-edit"></i> Editar </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="panel">
+        <header class="panel-heading"><i class="fa fa-table"></i>&nbsp;&nbsp; Ítems de 3er Nivel</header>
+        <div class="panel-body">
+            <div class="adv-table">
+                <table class="display table table-bordered table-striped" id="tbl_item">
+                    <thead>
+                        <tr>
+                            <th>Denominación</th>
+                            <th>Detalle</th>
+                            <th>URL</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {tbl_item}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</div>
+<!-- Datatables -->
+<script src="{url_static}vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="{url_static}vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="{url_static}vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="{url_static}vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function() {
+        $('#tbl_menu').dataTable( {
+            "aaSorting": [[ 0, "asc" ]]
+          , "iDisplayLength":5
+        } );
+    } );
+
+    $(document).ready(function() {
+        $('#tbl_submenu').dataTable( {
+            "aaSorting": [[ 0, "asc" ]]
+          , "iDisplayLength":5
+        } );
+    } );
+
+    $(document).ready(function() {
+        $('#tbl_item').dataTable( {
+            "aaSorting": [[ 0, "asc" ]]
+          , "iDisplayLength":5
+        } );
+    } );
+</script>

@@ -1,0 +1,81 @@
+<div class="row">
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    {gui_alerta}
+  </div>
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2>Perfil del Usuario <small></small></h2>
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+        <div class="col-md-3 col-sm-3 col-xs-12 profile_left">
+          <div class="profile_img">
+            <div id="crop-avatar">
+              <i class="fa fa-resistance" style="font-size: 150px;"></i>
+              <!--<img class="img-responsive avatar-view" src="images/picture.jpg" alt="Avatar" title="Change the avatar">-->
+            </div>
+          </div>
+          <h3>{usuario-apellido}, {usuario-nombre}</h3>
+          <ul class="list-unstyled user_data">
+            <li><i class="fa fa-briefcase user-profile-icon"></i> Usuario: {usuario-denominacion}</li>
+            <li><i class="fa fa-briefcase user-profile-icon"></i> Perfil: {usuario-nivel}</li>
+            <li><i class="fa fa-at user-profile-icon"></i> Correo Electrónico: {usuario-nivel}</li>
+          </ul>
+        </div>
+        <div class="col-md-9 col-sm-9 col-xs-12">
+          <div class="" role="tabpanel" data-example-id="togglable-tabs">
+            <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+              <li role="presentation" class="active"><a href="#cambiarContrasena" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">Cambiar contraseña</a></li>
+            </ul>
+            <div id="myTabContent" class="tab-content">
+              <div role="tabpanel" class="tab-pane fade active in" id="cambiarContrasena" aria-labelledby="profile-tab">
+                <form class="form-horizontal" role="form" action="{url_app}/usuario/actualizar_token" method="post">
+                  <div class="form-group">
+                    <label  class="col-lg-3 control-label">Nueva Contraseña</label>
+                    <div class="col-lg-9">
+                      <input type="password" name="token" class="form-control" id="n-pwd" placeholder="**********" style="text-transform:lowercase;" onkeyup="javascript:this.value=this.value.toLowerCase();"  required>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label  class="col-lg-3 control-label">Repetir Nueva Contraseña</label>
+                    <div class="col-lg-9">
+                      <input type="password" class="form-control" id="rt-pwd" onblur="confirm_pwd();" placeholder="**********" style="text-transform:lowercase;" onkeyup="javascript:this.value=this.value.toLowerCase();" required>
+                    </div>
+                  </div>
+                  <div class="col-lg-12">
+                    <div class="alert alert-block alert-danger fade in" style="display: none;" id="alert_error">
+                      <strong>Error!</strong> Las contraseñas no coinciden.
+                    </div>
+                    <div class="alert alert-block alert-success fade in" style="display: none;" id="alert_ok">
+                      <strong>Perfecto!</strong> Las contraseñas coinciden.
+                    </div>
+                  </div>  
+                  <div class="col-lg-12" style="margin-top: 2%;" align="right">
+                    <button class="btn btn-danger" type="submit" id="btn_cambiar" disabled><i class="fa fa-save"></i> Cambiar </button>
+                    <input type="hidden" name="usuario_id" value="{usuario-usuario_id}">
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  function confirm_pwd() {
+    var n_pwd = document.getElementById('n-pwd').value;
+    var rt_pwd = document.getElementById('rt-pwd').value;
+    if (n_pwd != rt_pwd) {
+      document.getElementById('alert_error').style.display = 'block';
+      document.getElementById('alert_ok').style.display = 'none';
+      document.getElementById('btn_cambiar').disabled = true;
+    } else {
+      document.getElementById('alert_error').style.display = 'none';
+      document.getElementById('alert_ok').style.display = 'block';
+      document.getElementById('btn_cambiar').disabled = false;
+    }
+  }
+</script> 

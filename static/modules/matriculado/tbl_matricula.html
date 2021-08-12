@@ -1,0 +1,19 @@
+<!--TBL_MATRICULA-->
+<tr style="font-size: 12px;">
+    <td>
+        <button class="btn btn-dark btn-xs" onclick="consultarEstado({matriculado-matriculado_id},{matricula-matricula_id},{matricula-btn_consultar_tipo_inactivo});" title="Consultar estado" style="display: {matricula-btn_display_consultar_estado}"><i class="fa fa-eye"></i></button>
+        <span class="label label-{matricula-lbl_class_estado}" style="font-size: 13px;">{matricula-lbl_estado}</span></td>
+    <td><span class="label label-primary" style="font-size: 13px;">{matricula-matricula}</span></td>
+    <td>{titulo-denominacion}</td>
+    <td>{universidad-denominacion}</td>
+    <td>{matricula-fecha_egreso}</td>
+    <td>{matricula-fecha_inscripcion}</td>
+    <td>
+        <center>
+            <a href="{url_app}/matriculado/gestionar_matricula/{matriculado-matriculado_id}@{matricula-matricula_id}" class="btn btn-primary btn-xs" title="Gestionar matricula"><i class="fa fa-cog"></i></a>
+            <button class="btn btn-warning btn-xs" onclick="editarMatricula({matriculado-matriculado_id},{matricula-matricula_id});" title="Editar matricula"><i class="fa fa-edit"></i></button>
+            <a class="btn btn-{matricula-btn_class_estado} btn-xs" onClick="formularioCambiaEstado({matricula-matricula_id},{matricula-btn_arg_estado});" href="#" title="Cambiar estado de matrícula"><i class="fa fa-{matricula-btn_icon_estado}"></i></a>
+        </center>
+    </td>
+</tr>
+<!--TBL_MATRICULA-->

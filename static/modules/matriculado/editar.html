@@ -1,0 +1,114 @@
+<div class="col-lg-12">
+    <ul class="breadcrumb">
+        <li><a href="{url_app}/usuario/panel"><i class="fa fa-home"></i> HOME</a></li>
+        <li><a href="{url_app}/{objeto}/panel">Panel Matriculados</a></li>
+    </ul>
+</div>
+<div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+        <div class="x_title">
+            <h2><i class="fa fa-edit"></i>&nbsp;&nbsp; Editar matriculado</h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+            <div class=" form">
+                <form class="form" id="formulario_guardar" method="post" action="{url_app}/matriculado/actualizar">
+                    <div class="form-group col-lg-6">
+                        <label>Apellido</label>
+                        <input type="text" class="form-control" name="apellido" id="apellido" value="{matriculado-apellido}" required>
+                    </div>
+                    <div class="form-group col-lg-6">
+                        <label>Nombre</label>
+                        <input type="text" class="form-control" name="nombre" id="nombre" value="{matriculado-nombre}" required>
+                    </div>
+                    <div class="form-group col-lg-2">
+                        <label>Tipo</label>
+                        <select class="form-control m-bot15" name="documentotipo" id="documentotipo" required>
+                            <option value="{documentotipo-documentotipo_id}">{documentotipo-denominacion}</option>
+                            {slt_documentotipo}
+                        </select>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <label>Número</label>    
+                        <input type="number" name="documento" id="documento" class="form-control" value="{matriculado-documento}" required>
+                    </div>
+                    <div class="form-group col-lg-6">
+                        <label>Provincia</label>
+                        <select class="form-control m-bot15" name="provincia" required>
+                            <option value="{provincia-provincia_id}">{provincia-denominacion}</option>
+                            {slt_provincia}
+                        </select>
+                    </div>
+                    <div class="form-group col-lg-8">
+                        <div class="form-group">
+                            <label>Barrio</label>
+                            <input type="text" class="form-control" id="barrio" name="barrio" value="{matriculado-barrio}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Domicilio</label>
+                            <input type="text" class="form-control" id="domicilio" name="domicilio" value="{matriculado-domicilio}" required>
+                        </div>
+                        {lst_input_infocontacto}
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <div class="form-group">
+                            <label>Código Postal</label>
+                            <input type="text" class="form-control" id="codigopostal" name="codigopostal" value="{matriculado-codigopostal}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Observación</label>
+                            <textarea class="form-control" id="observacion" name="observacion" rows="7">{matriculado-observacion}</textarea>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-12" style="margin-top: 2%;" align="right">
+                        <input type="hidden" name="matriculado_id" value="{matriculado-matriculado_id}">
+                        <a href="#" class="btn btn-app" onclick="verificarMatriculado()"><i class="fa fa-edit"></i> Editar</a>
+                    </div>
+                </form>
+            </div>            
+        </div>
+    </div>
+</div>
+<script>
+function verificarMatriculado() {
+    var array = new Array();
+    var flag_array = 0;
+
+    var apellido = document.getElementById("apellido").value;
+    if (apellido == null || apellido.length == 0 || apellido == "") {
+        flag_array = 1;
+        array.push("<strong>[ERROR]</strong> Por favor complete el APELLIDO.");
+    }
+
+    var nombre = document.getElementById("nombre").value;
+    if (nombre == null || nombre.length == 0 || nombre == "") {
+        flag_array = 1;
+        array.push("<strong>[ERROR]</strong> Por favor complete el NOMBRE.");
+    }
+
+    var documento = document.getElementById("documento").value;
+    if (documento == null || documento.length == 0 || documento == "") {
+        flag_array = 1;
+        array.push("<strong>[ERROR]</strong> Por favor complete el número de DOCUMENTO.");
+    }
+
+    var documentotipo = document.getElementById("documentotipo");
+    var documentotipo_id = documentotipo.options[documentotipo.selectedIndex].value;
+    if (documentotipo_id == null || documentotipo_id.length == 0 || documentotipo_id == "" || documentotipo_id == 0) {
+        flag_array = 1;
+        array.push("<strong>[ERROR]</strong> Por favor seleccione el TIPO DE DOCUMENTO.");
+    }
+
+    if (flag_array == 0) {
+        document.getElementById("formulario_guardar").submit();
+    } else {
+        var mensaje = array.join("<br><br>");
+        $('#sistema_alertas').modal('show');
+        document.getElementById("msj_alerta_modal").innerHTML = mensaje;
+    }
+}
+</script>

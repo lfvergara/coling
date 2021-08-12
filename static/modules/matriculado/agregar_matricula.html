@@ -1,0 +1,52 @@
+<div class="x_panel">
+    <div class="x_title">
+        <h2><i class="fa fa-edit"></i>&nbsp;&nbsp; Agregar matricula</h2>
+        <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+            <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+        </ul>
+        <div class="clearfix"></div>
+    </div>
+    <div class="x_content">
+        <div class=" form">
+            <form class="form" id="formulario_guardar" method="post" action="{url_app}/matriculado/guardar_matricula">
+                <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                    <label>Matrícula</label>
+                    <input type="text" class="form-control" name="matricula" id="matricula" required>
+                </div>
+                <div class="form-group col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                    <label>Título</label>
+                    <select class="form-control m-bot15" name="titulo" id="titulo" required>
+                        {slt_titulo}
+                    </select>
+                </div>
+                <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                    <label>Egreso</label>    
+                    <input type="date" name="fecha_egreso" id="fecha_egreso" class="form-control" required>
+                </div>
+                <div class="form-group col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                    <label>Universidad</label>
+                    <select class="form-control m-bot15" name="universidad" id="universidad" required>
+                        {slt_universidad}
+                    </select>
+                </div>
+                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                    <label>Inscripción</label>    
+                    <input type="date" name="fecha_inscripcion" id="fecha_inscripcion" class="form-control" required>
+                </div>
+                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                    <label>Habilitación</label>    
+                    <input type="text" name="habilitacion" id="habilitacion" class="form-control" required>
+                </div>
+                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                    <label>Tomo</label>    
+                    <input type="text" name="tomo" id="tomo" class="form-control" required>
+                </div>                    
+                <div class="form-group col-lg-12" style="margin-top: 2%;" align="right">
+                    <input type="hidden" name="matriculado_id" value="{matriculado-matriculado_id}">
+                    <a href="#" class="btn btn-app" onclick="verificarMatricula()"><i class="fa fa-save"></i> Agregar</a>
+                </div>
+            </form>
+        </div>            
+    </div>
+</div>

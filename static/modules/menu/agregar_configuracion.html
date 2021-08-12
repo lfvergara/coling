@@ -1,0 +1,27 @@
+<div class="col-lg-4">
+  <section class="panel panel-primary">
+    <header class="panel-heading">
+      Definir configuración de menú
+    </header>
+    <div class="panel-body">
+      <form class="form" id="formulario_guardar" method="post" action="{url_app}/configuracionmenu/guardar">
+        <div class="form-group col-lg-7">
+          <label>Denominación</label>
+          <input type="text" class="form-control" id="denominacion" name="denominacion" required>
+        </div>
+        <div class="form-group col-lg-5">
+          <label>Nivel</label>
+          <select class="form-control m-bot15" name="nivel" required>
+            <option value="1">Operador</option>
+            <option value="2">Supervisor</option>
+            <option value="3">Administrador</option>
+            <option value="9">Desarrollador</option>
+          </select>
+        </div>
+        <div class="col-lg-12" style="margin-top: 2%;" align="right">
+          <button class="btn btn-info" type="submit"><i class="fa fa-arrow-circle-o-right"></i> Continuar </button>
+        </div>
+      </form>
+    </div>
+  </section>
+</div>

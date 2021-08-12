@@ -1,0 +1,54 @@
+<div class="col-lg-12">
+    <ul class="breadcrumb">
+        <li><a href="{url_app}/usuario/panel"><i class="fa fa-home"></i> HOME</a></li>
+        <li><a href="{url_app}/{objeto}/panel">Panel Matriculados</a></li>
+    </ul>
+</div>
+<div class="col-md-6 col-sm-6 col-xs-6">
+    <div class="x_panel">
+        <div class="x_title">
+            <h2><i class="fa fa-search"></i>&nbsp;&nbsp; Buscar matriculado</h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+            <div class=" form">
+                <form class="form" id="formulario_guardar" method="post" action="{url_app}/matriculado/buscar">
+                    <div class="form-group col-lg-12">
+                        <label>Apellido - Nombre - Documento</label>
+                        <input type="text" class="form-control" id="buscar" name="buscar" required>
+                    </div>
+                    <div class="form-group col-lg-12" style="margin-top: 2%;" align="right">
+                        <button class="btn btn-app" type="submit"> <i class="fa fa-search"></i> Buscar </a>
+                    </div>
+                </form>
+            </div>            
+        </div>
+    </div>
+</div>
+<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" id="sistema_alertas">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabel">ATENCIÓN! Sistema de Alertas!</h4>
+            </div>
+            <div class="modal-body">
+                <div class="col-lg-12">
+                    <div class="col-lg-2">
+                        <center><h1><i class="fa fa-exclamation-triangle" style="color: #ff6c60;"></i></h1></center>
+                    </div>
+                    <div class="col-lg-10"><h5 id="msj_alerta_modal"></h5></div>
+                </div>
+                <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>

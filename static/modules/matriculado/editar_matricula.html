@@ -1,0 +1,57 @@
+<div class="x_panel">
+    <div class="x_title">
+        <h2><i class="fa fa-edit"></i>&nbsp;&nbsp; Editar matricula</h2>
+        <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+            <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+        </ul>
+        <div class="clearfix"></div>
+    </div>
+    <div class="x_content">
+        <div class=" form">
+            <form class="form" id="formulario_editar" method="post" action="{url_app}/matriculado/actualizar_matricula">
+                <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                    <label>Matrícula</label>
+                    <input type="text" class="form-control" name="matricula" id="matricula" value="{matricula-matricula}" required>
+                </div>
+                <div class="form-group col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                    <label>Título</label>
+                    <select class="form-control m-bot15" name="titulo" id="titulo" value="{matricula-}" required>
+                        <option value="{titulo-titulo_id}" selected>{titulo-denominacion}</option>
+                        {slt_titulo}
+                    </select>
+                </div>
+                <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                    <label>Egreso</label>    
+                    <input type="date" name="fecha_egreso" id="fecha_egreso" class="form-control" value="{matricula-fecha_egreso}" required>
+                </div>
+                <div class="form-group col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                    <label>Universidad</label>
+                    <select class="form-control m-bot15" name="universidad" id="universidad" value="{matricula-}" required>
+                        <option value="{universidad-universidad_id}" selected>{universidad-denominacion}</option>
+                        {slt_universidad}
+                    </select>
+                </div>
+                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                    <label>Inscripción</label>    
+                    <input type="date" name="fecha_inscripcion" id="fecha_inscripcion" class="form-control" value="{matricula-fecha_inscripcion}" required>
+                </div>
+                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                    <label>Habilitación</label>    
+                    <input type="text" name="habilitacion" id="habilitacion" class="form-control" value="{matricula-habilitacion}" required>
+                </div>
+                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                    <label>Tomo</label>    
+                    <input type="text" name="tomo" id="tomo" class="form-control" value="{matricula-tomo}" required>
+                </div>                    
+                <div class="form-group col-lg-12" style="margin-top: 2%;" align="right">
+                    <input type="hidden" name="matriculado_id" value="{matriculado-matriculado_id}">
+                    <input type="hidden" name="matricula_id" value="{matricula-matricula_id}">
+                    <input type="hidden" name="matricula_original" id="matricula_original" value="{matricula-matricula}">
+                    <a href="#" class="btn btn-app btn-danger" onclick="agregarMatricula({matriculado-matriculado_id})" style="background: #ac2925; color: #FFF;"><i class="fa fa-arrow-circle-left"></i> Volver</a>
+                    <a href="#" class="btn btn-app" onclick="verificarEditarMatricula()"><i class="fa fa-edit"></i> Editar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

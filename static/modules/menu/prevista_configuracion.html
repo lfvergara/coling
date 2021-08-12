@@ -1,0 +1,14 @@
+<div class="">
+  <ul class="to_do">
+    <!--BTN_MENU-->
+    <li><p><i class="fa fa-angle-double-right"></i> {menu-denominacion} </p></li>
+    <div class="pull-right" style="margin-top: -28px; padding-left: 88.1%; position: absolute;">
+      <button class="btn btn-primary btn-xs" onClick="verSubMenu({menu-menu_id});" id="icon_ver_menu_{menu-menu_id}" style="position: absolute; margin-right: 20px;"><i class="fa fa-eye "></i></button>
+      <button class="btn btn-warning btn-xs" onClick="ocultarSubMenu({menu-menu_id});" id="icon_ocultar_menu_{menu-menu_id}" style="position: absolute; margin-right: 20px; display: none;"><i class="fa fa-eye-slash"></i></button>
+    </div>
+    <div id="submenu_{menu-menu_id}" style="display: none;">
+      {btn_submenu}
+    </div>
+  <!--BTN_MENU-->
+  </ul>
+</div>

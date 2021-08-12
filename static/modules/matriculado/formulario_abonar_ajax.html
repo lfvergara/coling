@@ -1,0 +1,69 @@
+<div class="x_panel">
+    <div class="x_title">
+        <h2><i class="fa fa-edit"></i>&nbsp;&nbsp; Ingresar Pago</h2>
+        <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+            <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+        </ul>
+        <div class="clearfix"></div>
+    </div>
+    <div class="x_content">
+        <div class=" form" id="div_ingresar_pago">
+            <form class="form" method="post" action="{url_app}/matriculado/ingresar_pago">
+                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <label>Tipo Pago</label>
+                        <select class="form-control m-bot15" name="tipopago" id="tipopago" onChange="controlaTipoPago();" required>
+                            <option value="1">Efectivo</option>
+                            <option value="2">Cheque</option>
+                            <option value="3">Transferencia</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="form-group col-lg-8 col-md-12 col-sm-12 col-xs-12" id="div_numero_cheque" style="display: none;">
+                        <label>Número Cheque</label>
+                        <input type="text" class="form-control" name="numero_cheque" id="numero_cheque">
+                    </div>
+                    <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12" id="div_cheque_fecha_vencimiento" style="display: none;">
+                        <label>Fecha Vencimiento</label>
+                        <input type="date" class="form-control" name="fecha_vencimiento" id="fecha_vencimiento">
+                    </div>
+                    <div class="form-group col-lg-8 col-md-12 col-sm-12 col-xs-12" id="div_numero_transferencia" style="display: none;">
+                        <label>Número Transferencia</label>
+                        <input type="text" class="form-control" name="numero_transferencia" id="numero_transferencia">
+                    </div>
+                </div>
+                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                        <label>Resolución</label>
+                        <select class="form-control m-bot15" name="resolucion" id="resolucion" onChange="calculaValorResolucion();" required>
+                            <option value="0" selected>Seleccionar</option>
+                            {slt_resolucion}
+                        </select>
+                    </div>
+                    <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                        <label>Concepto de Pago</label>
+                        <select class="form-control m-bot15" name="conceptopago" id="conceptopago" required>
+                            {slt_conceptopago}
+                        </select>
+                    </div>
+                    <div class="form-group col-lg-4  col-md-12 col-sm-12 col-xs-12">
+                        <label>Importe</label>
+                        <input type="text" class="form-control" name="valor_abonado" id="valor_abonado" value="{cuentacorrientematriculado-valor_abonado}" required>
+                    </div>
+                </div>
+                <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="form-group col-lg-12" style="margin-top: 2%;" align="right">
+                        <input type="hidden" name="matriculado_id" value="{matriculado-matriculado_id}">
+                        <input type="hidden" name="matricula_id" value="{matricula-matricula_id}">
+                        <input type="hidden" name="valor_matricula" value="{titulo-valor_matricula}">
+                        <input type="hidden" name="cuentacorrientematriculado_id" id="cuentacorrientematriculado_id"  value="{cuentacorrientematriculado-cuentacorrientematriculado_id}">
+                        <input type="hidden" name="original_valor_abonado" id="original_valor_abonado"  value="{cuentacorrientematriculado-valor_abonado}">
+                        <button type="submit" class="btn btn-app"><i class="fa fa-usd"></i> Ingresar</button>
+                    </div>
+                </div>
+            </form>
+        </div>            
+    </div>
+</div>

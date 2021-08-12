@@ -1,0 +1,55 @@
+<script type="text/javascript">
+  function traerTercerNivel(menu_id) {
+    var traer_tercer_nivel = $.ajax({
+      url: '{url_app}/configuracionmenu/ajax_traer_tercer_nivel/' + menu_id,
+        dataType: 'text',
+        async: false
+    }).responseText;
+    document.getElementById("div_tercer_nivel").innerHTML = traer_tercer_nivel;
+    document.getElementById("section_segundo_nivel").style.display = 'block';
+  }
+</script>
+<div class="col-lg-4">
+  <aside class="profile-nav alt green-border">
+    <section class="panel">
+      <ul class="nav nav-pills nav-stacked">
+        <li><a href="javascript:;"> <i class="fa fa-clock-o"></i> {configuracionmenu-denominacion}</a></li>
+        <li><a href="javascript:;"> <i class="fa fa-calendar"></i> {configuracionmenu-nivel_denominacion}</a></li>
+        <li><a href="javascript:;"> <i class="fa fa-bell-o"></i> {departamento-denominacion}</a></li>
+      </ul>
+    </section>
+  </aside>
+  <form class="form-horizontal tasi-form" id="formulario_guardar" method="post" action="{url_app}/menu/configurar_tercer_nivel_menu">
+    <section class="panel panel-primary">
+      <header class="panel-heading">
+        Configurar Menú
+      </header>
+      <div class="panel-body">  
+        <label class="col-lg-12">1er nivel</label>
+        <div class="col-lg-12">        
+          {opt_menu}          
+        </div>
+      </div>
+    </section>
+    <section class="panel panel-info" id="section_segundo_nivel" style="display: none;">
+      <header class="panel-heading">
+        Seleccionar ítems de 2do nivel
+      </header>
+      <div class="panel-body">
+        <label class="col-lg-12">Ítems</label>
+        <div class="col-lg-12" id="div_tercer_nivel">
+          <div class="form-group">
+            <div class="col-lg-10">
+              {chk_segundo_nivel}
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-12" style="margin-top: 2%;" align="right">
+          <button class="btn btn-info" type="submit"><i class="fa fa-arrow-circle-o-right"></i> Continuar </button>
+        </div>
+      </div>
+    </section>
+  </form>
+</div>
+<div class="col-lg-8">
+</div>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{app_nombre} {app_version}</title>
+    <link href="{url_static}vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{url_static}vendors/google-code-prettify/bin/prettify.min.css" rel="stylesheet">
+    <link href="{url_static}vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="{url_static}vendors/nprogress/nprogress.css" rel="stylesheet">
+    <link href="{url_static}vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+    <link href="{url_static}build/css/custom.min.css" rel="stylesheet">
+    <link rel="shortcut icon" type="image/png" href="{url_static}images/icon_dhtordo.png"/>
+    <script src="{url_static}vendors/jquery/dist/jquery.min.js"></script>
+    <script src="{url_static}vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="{url_app}/static/common/alertas/alertas.js" language="javascript"></script>
+  </head>
+  <body class="nav-md">
+    <div class="container body">
+      <div class="main_container">
+        <div class="col-md-3 left_col">
+          <div class="left_col scroll-view hidden-print">
+            <div class="profile clearfix hidden-print" >
+              <div style="background: #FFF;">
+                <div class="profile_pic">
+                  <img src="{url_static}images/logo.jpg" style="width: 220px; margin-left: 4px;">
+                </div>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <br />
+            {sidebar-menu}
+            <div class="sidebar-footer hidden-small">
+              <a data-toggle="tooltip" data-placement="top" title="Perfil" href="{url_app}/usuario/perfil" style="color: #a8c0da;">
+                <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+              </a>
+              <a data-toggle="tooltip" data-placement="top" title="">
+              <!--<span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>-->              
+              </a>
+              <a data-toggle="tooltip" data-placement="top" title="Lock">
+                <!--<span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>-->
+              </a>
+              <a data-toggle="tooltip" data-placement="top" title="Log Out" href="{url_app}/usuario/checkout" style="color: #a8c0da;">
+                <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="top_nav hidden-print">
+          <div class="nav_menu">
+            <nav>
+              <div class="nav toggle">
+                <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+              </div>
+              <ul class="nav navbar-nav navbar-right">
+                <li class="">
+                  <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    <img src="{url_static}images/user.png" alt="">{usuariodetalle-apellido} {usuariodetalle-nombre}
+                    <span class=" fa fa-angle-down"></span>
+                  </a>
+                  <ul class="dropdown-menu dropdown-usermenu pull-right">
+                    <li><a href="{url_app}/usuario/perfil"><i class="fa fa-user pull-right"></i> Cambiar contraseña</a></li>
+                    <!--<li><a href="javascript:;">Help</a></li>-->
+                    <li><a href="{url_app}/usuario/checkout"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+        <div class="right_col" role="main">
+          <div class="row">
+            {contenido}
+            <div class="class-lg-12" id="div_modal"></div>
+          </div>
+        </div>
+        <footer>
+          <div class="pull-left hidden-print"></div>
+          <div class="pull-right hidden-print" style="padding-top: 1%;">
+            {app_nombre} {app_version} - ©2020 Todos los derechos reservados.
+          </div>
+          <div class="clearfix"></div>
+        </footer>
+      </div>
+    </div>
+    <script src="{url_static}vendors/fastclick/lib/fastclick.js"></script>
+    <script src="{url_static}vendors/nprogress/nprogress.js"></script>
+    <script src="{url_static}vendors/iCheck/icheck.min.js"></script>
+    <script src="{url_static}build/js/custom.js"></script>
+  </body>
+</html>

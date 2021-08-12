@@ -1,0 +1,110 @@
+<!--DATA TABLE-->
+<link href="{url_static}vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
+<link href="{url_static}vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
+<!--DATA TABLE-->
+<div class="col-lg-12">
+    <ul class="breadcrumb">
+        <li><a href="{url_app}/usuario/panel"><i class="fa fa-home"></i> HOME</a></li>
+        <li><a href="{url_app}/{objeto}/agregar">Panel Usuarios</a></li>
+    </ul>
+</div>
+<div class="col-md-4 col-sm-4 col-xs-4">
+    <div class="x_panel">
+        <div class="x_title">
+            <h2><i class="fa fa-edit"></i>&nbsp;&nbsp; Editar usuario</h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+            <div class=" form">
+                <form class="form" id="formulario_guardar" method="post" action="{url_app}/usuario/actualizar">
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" value="{usuariodetalle-nombre}" onKeypress="if ((event.keyCode != 32) && (event.keyCode < 65) || (event.keyCode > 90) && (event.keyCode < 97) || (event.keyCode > 122)) event.returnValue = false;" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Apellido</label>
+                        <input type="text" class="form-control" name="apellido" id="apellido" value="{usuariodetalle-apellido}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Usuario</label>
+                        <input type="text" class="form-control" name="denominacion" id="denominacion" value="{usuario-denominacion}" readonly>
+                        <div class="form-group col-lg-12" id="div_error_usuario"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Perfil</label>
+                        <select class="form-control" name="configuracionmenu">
+                            <option value="{configuracionmenu-configuracionmenu_id}">{configuracionmenu-denominacion}</option>  
+                            {slt_configuracionmenu}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Correo Electrónico</label>
+                        <input type="mail" class="form-control" name="correoelectronico" value="{usuariodetalle-correoelectronico}" required>
+                        <div class="form-group col-lg-12" id="div_error_usuario"></div>
+                    </div>
+                    <div class="col-lg-12" style="margin-top: 2%;" align="right">
+                        <input type="hidden" name="usuario_id" value="USUARIO_ID">
+                        <input type="hidden" name="usuariodetalle_id" value="{usuariodetalle-usuariodetalle_id}">
+                        <input type="hidden" name="token" value="{usuariodetalle-token}">
+                        <a href="#" class="btn btn-app" onclick="confirma_formulario(2, '')"><i class="fa fa-edit"></i> Editar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-8 col-sm-8 col-xs-8">
+    <div class="x_panel">
+        <div class="x_title">
+            <h2><i class="fa fa-table"></i>&nbsp;&nbsp; Listado de usuarios</h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+            <table id="tbl_usuario" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Apellido, Nombre</th>
+                        <th>Usuario</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--TBL_USUARIO-->
+                    <tr>
+                        <td>USUARIO</td>
+                        <td>DENOMINACION</td>
+                        <td>
+                            <center>
+                                <button class="btn btn-primary btn-xs" title="Blanquear Pass" onclick="location.href='{url_app}/usuario/regenerar_token/USUARIO_ID'"><i class="fa fa-retweet"></i></button>
+                                <button class="btn btn-warning btn-xs" onclick="confirma_formulario(3, '{url_app}/usuario/editar/USUARIO_ID');" title="Editar Usuario"><i class="fa fa-edit"></i></button>
+                                <!--<button class="btn btn-danger btn-xs" onclick="confirma_formulario(4, '{url_app}/usuario/eliminar/USUARIO_ID');" title="Editar Usuario"><i class="fa fa-trash-o"></i></button>-->
+                            </center>
+                        </td>
+                    </tr>
+                    <!--TBL_USUARIO-->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Datatables -->
+<script src="{url_static}vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="{url_static}vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="{url_static}vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="{url_static}vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function() {
+        $('#tbl_usuario').dataTable( {
+            "aaSorting": [[ 0, "asc" ]]
+          , "iDisplayLength":10
+        } );
+    } );
+</script>

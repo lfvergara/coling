@@ -13,6 +13,7 @@ require_once "modules/cuentacorrientematriculado/model.php";
 require_once "modules/configuracion/model.php";
 require_once "modules/comprobantepago/model.php";
 require_once "modules/usuario/model.php";
+require_once "tools/facturaAFIPTool.php";
 
 
 class MatriculadoController {

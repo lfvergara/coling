@@ -982,7 +982,7 @@ class MatriculadoController {
 	}
 
 	function traer_tipos_facturas() {
-		require_once "tools/facturaAFIPTool.php";
+		require_once "common/libs/desa_afip.php-master/src/Afip.php";
 		$cm = new Configuracion();
 		$cm->configuracion_id = 1;
 		$cm->get();

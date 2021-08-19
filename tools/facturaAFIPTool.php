@@ -6,22 +6,26 @@ require_once "common/libs/desa_afip.php-master/src/Afip.php";
 
 class FacturaAFIPTool {
     
-    public function facturarAFIP($obj_configuracion, $obj_tipofactura, $obj_egreso, $egresodetalle_collection) { 
+    public function facturarAFIP($obj_configuracion, $obj_tipofactura, $obj_matriculado, $egresodetalle_collection) { 
         $CUIT = $obj_configuracion->cuit;
         $PTO_VENTA = $obj_configuracion->punto_venta;       
         
-        $fecha_factura = $obj_egreso->fecha;
-        $tipofactura_afip_id = $obj_egreso->tipofactura->afip_id;
-        $documentotipo_cliente = $obj_egreso->cliente->documentotipo->afip_id;
-        $documento_cliente = $obj_egreso->cliente->documento;
+        $fecha_factura = date('Y-m-d');
+        $tipofactura_afip_id = $obj_tipofactura->afip_id;
+        $documentotipo_matriculado = $obj_matriculado->documentotipo->afip_id;
+        $documento_matriculado = $obj_matriculado->documento;
             
-        $afip = new Afip(array('CUIT' => $CUIT, 'production' => true));
-        $ultima_factura = $afip->ElectronicBilling->GetLastVoucher($PTO_VENTA,$tipofactura_afip_id);
+        $afip = new Afip(array('CUIT' => $CUIT, 'production' => false));
+        $ultima_factura = $afip->ElectronicBilling->GetLastVoucher($PTO_VENTA, $tipofactura_afip_id);
         
-        $nueva_factura = array('punto_venta'=>$obj_configuracion->punto_venta, 'nueva_factura'=>$ultima_factura + 1, 'tipofactura_afip_id'=>$tipofactura_afip_id,
-                               'fecha_factura'=>$fecha_factura, 'documentotipo_cliente'=>$documentotipo_cliente, 'documento_cliente'=>$documento_cliente);
+        $nueva_factura = array('punto_venta' => $PTO_VENTA, 
+                               'nueva_factura' => $ultima_factura + 1, }
+                               'tipofactura_afip_id' => $tipofactura_afip_id,
+                               'fecha_factura' => $fecha_factura, 
+                               'documentotipo_matriculado' => $documentotipo_matriculado, 
+                               'documento_matriculado' => $documento_matriculado);
         
-        $array_discriminado = $this->prepara_array_discriminado($obj_egreso, $egresodetalle_collection);
+        $array_discriminado = $this->prepara_array_discriminado($obj_matriculado, $egresodetalle_collection);
         $array_final = array_merge($nueva_factura, $array_discriminado);
         $data = $this->generaArrayData($array_final);
         
@@ -30,34 +34,34 @@ class FacturaAFIPTool {
         return $res;
     }
 
-    public function notaCreditoAFIP($obj_configuracion, $obj_tipofactura, $obj_notacredito, $obj_egreso, $notacreditodetalle_collection) { 
+    public function notaCreditoAFIP($obj_configuracion, $obj_tipofactura, $obj_notacredito, $obj_matriculado, $notacreditodetalle_collection) { 
         $CUIT = $obj_configuracion->cuit;
         $PTO_VENTA = $obj_configuracion->punto_venta;
         
         $fecha_factura_egreso = $obj_notacredito->fecha;
         $tipofactura_afip_id = $obj_notacredito->tipofactura->afip_id;
-        $documentotipo_cliente = $obj_egreso->cliente->documentotipo->afip_id;
-        $documento_cliente = $obj_egreso->cliente->documento;
-        $descuento = $obj_egreso->descuento;
+        $documentotipo_matriculado = $obj_matriculado->cliente->documentotipo->afip_id;
+        $documento_matriculado = $obj_matriculado->cliente->documento;
+        $descuento = $obj_matriculado->descuento;
         $obj_notacredito->descuento = $descuento;
             
-        $afip = new Afip(array('CUIT' => $CUIT, 'production' => true));
+        $afip = new Afip(array('CUIT' => $CUIT, 'production' => false));
         $ultima_factura = $afip->ElectronicBilling->GetLastVoucher($PTO_VENTA,$tipofactura_afip_id);
         
         $nueva_factura = array('punto_venta'=>$obj_configuracion->punto_venta, 'nueva_factura'=>$ultima_factura + 1, 'tipofactura_afip_id'=>$tipofactura_afip_id,
-                               'fecha_factura'=>$fecha_factura_egreso, 'documentotipo_cliente'=>$documentotipo_cliente, 'documento_cliente'=>$documento_cliente,
+                               'fecha_factura'=>$fecha_factura_egreso, 'documentotipo_matriculado'=>$documentotipo_matriculado, 'documento_matriculado'=>$documento_matriculado,
                                'cuit_emisor'=>$CUIT);
         
         $array_discriminado = $this->prepara_array_discriminado_nc($obj_notacredito, $notacreditodetalle_collection);
         $array_final = array_merge($nueva_factura, $array_discriminado);
-        $data = $this->generaArrayDataNC($array_final, $obj_egreso);
+        $data = $this->generaArrayDataNC($array_final, $obj_matriculado);
         
         $res = $afip->ElectronicBilling->CreateVoucher($data);
         $res['NUMFACTURA'] = $nueva_factura['nueva_factura'];
         return $res;
     }
 
-    public function preparaFacturaAFIP($obj_tipofactura, $obj_egreso, $egresodetalle_collection) { 
+    public function preparaFacturaAFIP($obj_tipofactura, $obj_matriculado, $egresodetalle_collection) { 
         $cm = new Configuracion();
         $cm->configuracion_id = 1;
         $cm->get();
@@ -65,9 +69,9 @@ class FacturaAFIPTool {
         $CUIT = $cm->cuit;
         $PTO_VENTA = $cm->punto_venta;
         
-        $array_discriminado = $this->prepara_array_discriminado($obj_egreso, $egresodetalle_collection);
-        $tipofactura_afip_id = $obj_egreso->tipofactura->afip_id;
-        $afip = new Afip(array('CUIT' => $CUIT, 'production' => true));
+        $array_discriminado = $this->prepara_array_discriminado($obj_matriculado, $egresodetalle_collection);
+        $tipofactura_afip_id = $obj_matriculado->tipofactura->afip_id;
+        $afip = new Afip(array('CUIT' => $CUIT, 'production' => false));
         $ultima_factura = $afip->ElectronicBilling->GetLastVoucher($PTO_VENTA,$tipofactura_afip_id);
         
         $nueva_factura = array('punto_venta'=>$cm->punto_venta, 'nueva_factura'=>$ultima_factura + 1);
@@ -85,7 +89,7 @@ class FacturaAFIPTool {
         $array_discriminado = $this->prepara_array_discriminado_nc($obj_notacredito, $notacreditodetalle_collection);
         $tipofactura_afip_id = $obj_notacredito->tipofactura->afip_id;
         
-        $afip = new Afip(array('CUIT' => $CUIT, 'production' => true));
+        $afip = new Afip(array('CUIT' => $CUIT, 'production' => false));
         $ultima_factura = $afip->ElectronicBilling->GetLastVoucher($PTO_VENTA,$tipofactura_afip_id);
 
         $nueva_factura = array('punto_venta'=>$cm->punto_venta, 'nueva_factura'=>$ultima_factura + 1);
@@ -100,8 +104,8 @@ class FacturaAFIPTool {
         $tipofactura = $array_final['tipofactura_afip_id'];
         $fecha_factura = date('Ymd');
         $importe_total = $array_final['importe_total'];
-        $documentotipo_cliente = $array_final['documentotipo_cliente'];
-        $documento_cliente = $array_final['documento_cliente'];
+        $documentotipo_matriculado = $array_final['documentotipo_matriculado'];
+        $documento_matriculado = $array_final['documento_matriculado'];
         $importe_nogravado = $array_final['importe_nogravado'];
         $importe_exento = $array_final['importe_exento'];
         $importe_neto = $array_final['importe_neto'];
@@ -113,8 +117,8 @@ class FacturaAFIPTool {
             'PtoVta'    => $punto_venta,  // Punto de venta
             'CbteTipo'  => $tipofactura,  // Tipo de comprobante (ver tipos disponibles) 
             'Concepto'  => 1,  // Concepto del Comprobante: (1)Productos, (2)Servicios, (3)Productos y Servicios
-            'DocTipo'   => $documentotipo_cliente, // Tipo de documento del comprador (99 consumidor final, ver tipos disponibles)
-            'DocNro'    => $documento_cliente,  // Número de documento del comprador (0 consumidor final)
+            'DocTipo'   => $documentotipo_matriculado, // Tipo de documento del comprador (99 consumidor final, ver tipos disponibles)
+            'DocNro'    => $documento_matriculado,  // Número de documento del comprador (0 consumidor final)
             'CbteDesde'     => $numero_factura,  // Número de comprobante o numero del primer comprobante en caso de ser mas de uno
             'CbteHasta'     => $numero_factura,  // Número de comprobante o numero del último comprobante en caso de ser mas de uno
             'CbteFch'   => intval($fecha_factura), // (Opcional) Fecha del comprobante (yyyymmdd) o fecha actual si es nulo
@@ -132,32 +136,32 @@ class FacturaAFIPTool {
         return $data;
     }
 
-    function generaArrayDataNC($array_final, $obj_egreso_referencia) { 
+    function generaArrayDataNC($array_final, $obj_matriculado_referencia) { 
         $cuit_emisor = $array_final['cuit_emisor'];
         $punto_venta = $array_final['punto_venta'];
         $numero_factura = $array_final['nueva_factura'];
         $tipofactura = $array_final['tipofactura_afip_id'];
         $fecha_factura = date('Ymd');
         $importe_total = $array_final['importe_total'];
-        $documentotipo_cliente = $array_final['documentotipo_cliente'];
-        $documento_cliente = $array_final['documento_cliente'];
+        $documentotipo_matriculado = $array_final['documentotipo_matriculado'];
+        $documento_matriculado = $array_final['documento_matriculado'];
         $importe_nogravado = $array_final['importe_nogravado'];
         $importe_exento = $array_final['importe_exento'];
         $importe_neto = $array_final['importe_neto'];
         $importe_iva = $array_final['importe_iva'];
         $array_alicuotas = $array_final['array_alicuotas'];
         
-        $tipofactura_egreso = $obj_egreso_referencia->tipofactura->afip_id;
-        $puntoventa_egreso = $obj_egreso_referencia->punto_venta;
-        $numerofactura_egreso = $obj_egreso_referencia->numero_factura;
+        $tipofactura_egreso = $obj_matriculado_referencia->tipofactura->afip_id;
+        $puntoventa_egreso = $obj_matriculado_referencia->punto_venta;
+        $numerofactura_egreso = $obj_matriculado_referencia->numero_factura;
 
         $data = array(
             'CantReg'   => 1,  // Cantidad de comprobantes a registrar
             'PtoVta'    => $punto_venta,  // Punto de venta
             'CbteTipo'  => $tipofactura,  // Tipo de comprobante (ver tipos disponibles) 
             'Concepto'  => 1,  // Concepto del Comprobante: (1)Productos, (2)Servicios, (3)Productos y Servicios
-            'DocTipo'   => $documentotipo_cliente, // Tipo de documento del comprador (99 consumidor final, ver tipos disponibles)
-            'DocNro'    => $documento_cliente,  // Número de documento del comprador (0 consumidor final)
+            'DocTipo'   => $documentotipo_matriculado, // Tipo de documento del comprador (99 consumidor final, ver tipos disponibles)
+            'DocNro'    => $documento_matriculado,  // Número de documento del comprador (0 consumidor final)
             'CbteDesde'     => $numero_factura,  // Número de comprobante o numero del primer comprobante en caso de ser mas de uno
             'CbteHasta'     => $numero_factura,  // Número de comprobante o numero del último comprobante en caso de ser mas de uno
             'CbteFch'   => intval($fecha_factura), // (Opcional) Fecha del comprobante (yyyymmdd) o fecha actual si es nulo
@@ -182,29 +186,20 @@ class FacturaAFIPTool {
 
         return $data;
     }
+    /*
+    importe_total
+    descuento
+    exento
+    no_gravado
+    */
+    function prepara_array_discriminado($obj_matriculado, $egresodetalle_collection) { 
+        $importe_total = $obj_matriculado->importe_total;
 
-    function prepara_array_discriminado($obj_egreso, $egresodetalle_collection) { 
-        $importe_total = $obj_egreso->importe_total;
-
-        $descuento_factura = $obj_egreso->descuento;
         $valor_descuento_factura = $descuento_factura / 100;
         
         // SEPARO EXENTOS Y NO GRAVADOS
         $array_exentos = array();
         $array_nogravados = array();
-        foreach ($egresodetalle_collection as $clave=>$valor) {
-            $exento = $valor['EXENTO'];
-            $nogravado = $valor['NOGRAVADO'];
-            if ($exento == 1) {
-                $array_exentos[] = $valor;
-                unset($egresodetalle_collection[$clave]);
-            }
-
-            if ($nogravado == 1) {
-                $array_nogravados[] = $valor;
-                unset($egresodetalle_collection[$clave]);
-            }
-        }
         
         // CALCULO NETO UNITARIO POR CANTIDAD E IVA POR PRODUCTO
         foreach ($egresodetalle_collection as $clave=>$valor) {
@@ -584,9 +579,9 @@ class FacturaAFIPTool {
         return $array_final;
     }
 
-    function BKprepara_array_discriminado($obj_egreso, $egresodetalle_collection) { 
-        $importe_total = $obj_egreso->importe_total;
-        $descuento_factura = $obj_egreso->descuento;
+    function BKprepara_array_discriminado($obj_matriculado, $egresodetalle_collection) { 
+        $importe_total = $obj_matriculado->importe_total;
+        $descuento_factura = $obj_matriculado->descuento;
         $valor_descuento_factura = $descuento_factura / 100;
         
         // SEPARO EXENTOS Y NO GRAVADOS
@@ -685,7 +680,7 @@ class FacturaAFIPTool {
         $CUIT = $cm->cuit;
         $PTO_VENTA = $cm->punto_venta;
         
-        $afip = new Afip(array('CUIT' => $CUIT, 'production' => true));
+        $afip = new Afip(array('CUIT' => $CUIT, 'production' => false));
         $ultima_factura = $afip->ElectronicBilling->GetLastVoucher($PTO_VENTA,$tipofactura_afip_id);
         $nuevo_numero = $ultima_factura + 1;
         $nuevo_comprobante = str_pad($cm->punto_venta, 4, '0', STR_PAD_LEFT) . "-";
@@ -700,7 +695,7 @@ class FacturaAFIPTool {
 
         $punto_venta = $cm->punto_venta;
         $CUIT = $cm->cuit;
-        $afip = new Afip(array('CUIT' => $CUIT, 'production' => true));
+        $afip = new Afip(array('CUIT' => $CUIT, 'production' => false));
         $info_factura = $afip->ElectronicBilling->GetVoucherInfo($punto_venta,3,6); //Devuelve la información del comprobante 1 para el punto de venta 1 y el tipo de comprobante 6 (Factura B)->GetAliquotTypes();
         print_r($info_factura);exit;
         return $info_factura;
@@ -712,7 +707,7 @@ class FacturaAFIPTool {
         $cm->get();
 
         $CUIT = $cm->cuit;
-        $afip = new Afip(array('CUIT' => $CUIT, 'production' => true));
+        $afip = new Afip(array('CUIT' => $CUIT, 'production' => false));
         $alicuotas = $afip->ElectronicBilling->GetAliquotTypes();
         return $alicuotas;
     }
@@ -723,19 +718,19 @@ class FacturaAFIPTool {
         $cm->get();
 
         $CUIT = $cm->cuit;
-        $afip = new Afip(array('CUIT' => $CUIT, 'production' => true));
+        $afip = new Afip(array('CUIT' => $CUIT, 'production' => false));
         $voucher_types = $afip->ElectronicBilling->GetVoucherTypes();
         return $voucher_types;
     }
 
-    function arrayFacturaA($obj_egreso) { 
+    function arrayFacturaA($obj_matriculado) { 
 
-        $punto_venta = $obj_egreso->punto_venta;
-        $numero_factura = $obj_egreso->numero_factura;
-        $tipo_factura = $obj_egreso->tipofactura->afip_id;
-        $fecha_factura = str_replace('-', '', $obj_egreso->fecha);
-        $importe_total = $obj_egreso->importe_total;
-        //$importe_total = $obj_egreso->importe_total;
+        $punto_venta = $obj_matriculado->punto_venta;
+        $numero_factura = $obj_matriculado->numero_factura;
+        $tipo_factura = $obj_matriculado->tipofactura->afip_id;
+        $fecha_factura = str_replace('-', '', $obj_matriculado->fecha);
+        $importe_total = $obj_matriculado->importe_total;
+        //$importe_total = $obj_matriculado->importe_total;
         print_r($tipo_factura);exit;
 
 

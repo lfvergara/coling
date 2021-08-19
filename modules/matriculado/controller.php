@@ -12,8 +12,8 @@ require_once "modules/movimientotipopago/model.php";
 require_once "modules/cuentacorrientematriculado/model.php";
 require_once "modules/configuracion/model.php";
 require_once "modules/comprobantepago/model.php";
+require_once "modules/tipofactura/model.php";
 require_once "modules/usuario/model.php";
-require_once "tools/facturaAFIPTool.php";
 
 
 class MatriculadoController {
@@ -601,9 +601,10 @@ class MatriculadoController {
 	}
 
 	function ingresar_pago_otros() {
+		require_once "tools/facturaAFIPTool.php";
 		require_once "tools/facturaPDFTool.php";
 		require_once "tools/email.php";
-		
+
 		$movimientotipopago_id = filter_input(INPUT_POST, 'tipopago');
 		switch ($movimientotipopago_id) {
 			case 1:
@@ -627,6 +628,51 @@ class MatriculadoController {
 		$matricula_id = filter_input(INPUT_POST, 'matricula_id');
 		$valor_abonado = filter_input(INPUT_POST, 'importe');
 		$usuario_id = $_SESSION["data-login-" . APP_ABREV]["usuario-usuario_id"];
+
+		/* ---------------------------------------------------------------------------------------- */
+		$cm = new Configuracion();
+        $cm->configuracion_id = 1;
+        $cm->get();
+        
+		$tipofactura_id = 3; // Para facturas tipo B - CONSUMIDOR FINAL
+		$tfm = new TipoFactura();
+		$tfm->tipofactura_id = $tipofactura_id;
+		$tfm->get();
+
+		$this->model->matriculado_id = $matriculado_id;
+		$this->model->get();
+
+		$resultadoAFIP = FacturaAFIPTool()->facturarAFIP($cm, $tfm, $this->model);
+		if (is_array($resultadoAFIP)) {
+			$eam = new EgresoAFIP();
+			$eam->cae = $resultadoAFIP['CAE'];
+			$eam->fecha = date('Y-m-d');
+			$eam->punto_venta = $cm->punto_venta;
+			$eam->numero_factura = $resultadoAFIP['NUMFACTURA'];
+			$eam->vencimiento = $resultadoAFIP['CAEFchVto'];
+			$eam->tipofactura = $tipofactura_id;
+			$eam->egreso_id = $egreso_id;
+			$eam->save();
+
+			$this->model->egreso_id = $egreso_id;
+			$this->model->get();
+			$this->model->emitido = 1;
+			$this->model->save();
+		}
+		/* ---------------------------------------------------------------------------------------- */
+
+
+
+
+
+
+
+
+
+
+
+
+		
 
 		$mtpm = new MovimientoTipoPago();
 		$mtpm->denominacion = $movimientotipopago_denominacion;
@@ -656,17 +702,14 @@ class MatriculadoController {
 		$ccmm->save();
 		$cuentacorrientematriculado_id = $ccmm->cuentacorrientematriculado_id;
 
-		$cm = new Configuracion();
-        $cm->configuracion_id = 1;
-        $cm->get();
-        $tipofactura_id = $cm->tipofactura; 
-        $punto_venta = $cm->punto_venta; 
+		
 
+        /*
 		if ($tipofactura_id != 2) {
-			/*
+			
 			$tipofactura_afip = $tfm->afip_id;
 			$siguiente_factura = FacturaAFIPTool()->traerSiguienteFacturaAFIP($tipofactura_afip);
-			*/
+			
 		} else {
 			$select = "(MAX(cp.numero_factura) + 1 ) AS SIGUIENTE_NUMERO ";
 			$from = "comprobantepago cp";
@@ -675,10 +718,12 @@ class MatriculadoController {
 			$nuevo_numero = CollectorCondition()->get('ComprobantePago', $where, 4, $from, $select, $groupby);
 			$nuevo_numero = (!is_array($nuevo_numero)) ? 1 : $nuevo_numero[0]['SIGUIENTE_NUMERO'];
 		}
+		*/
 
+		$siguiente_factura = FacturaAFIPTool()->traerSiguienteFacturaAFIP($tipofactura_afip);
 		$cpm = new ComprobantePago();
 		$cpm->punto_venta = $punto_venta;
-		$cpm->numero_factura = $nuevo_numero;
+		$cpm->numero_factura = $siguiente_factura;
 		$cpm->fecha = date('Y-m-d');
 		$cpm->hora = date('H:i:s');
 		$cpm->subtotal = $valor_abonado;
@@ -936,15 +981,15 @@ class MatriculadoController {
 		print "{$usuario}@{$perfil}@{$detalle}";
 	}
 
-	function traer_tipos_alicuotas() {
+	function traer_tipos_facturas() {
 		$cm = new Configuracion();
 		$cm->configuracion_id = 1;
 		$cm->get();
 
-		$afip = new Afip(array('CUIT' => $cm->cuit, 'production' => false));
-		$voucher_types = $afip->ElectronicBilling->GetAliquotTypes();
-		print_r($voucher_types);
-		exit;
+		$CUIT = $cm->cuit;
+        $afip = new Afip(array('CUIT' => $CUIT, 'production' => false));
+        $voucher_types = $afip->ElectronicBilling->GetVoucherTypes();
+        return $voucher_types;
 	}
 }
 ?>

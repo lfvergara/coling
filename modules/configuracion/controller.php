@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once "modules/configuracion/model.php";
 require_once "modules/configuracion/view.php";
 

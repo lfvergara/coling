@@ -936,5 +936,16 @@ class MatriculadoController {
 
 		print "{$usuario}@{$perfil}@{$detalle}";
 	}
+
+	function traer_tipos_alicuotas() {
+		$cm = new Configuracion();
+		$cm->configuracion_id = 1;
+		$cm->get();
+
+		$afip = new Afip(array('CUIT' => $cm->cuit, 'production' => false));
+		$voucher_types = $afip->ElectronicBilling->GetAliquotTypes();
+		print_r($voucher_types);
+		exit;
+	}
 }
 ?>

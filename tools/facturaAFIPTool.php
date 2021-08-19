@@ -19,7 +19,7 @@ class FacturaAFIPTool {
         $ultima_factura = $afip->ElectronicBilling->GetLastVoucher($PTO_VENTA, $tipofactura_afip_id);
         
         $nueva_factura = array('punto_venta' => $PTO_VENTA, 
-                               'nueva_factura' => $ultima_factura + 1, }
+                               'nueva_factura' => $ultima_factura + 1, 
                                'tipofactura_afip_id' => $tipofactura_afip_id,
                                'fecha_factura' => $fecha_factura, 
                                'documentotipo_matriculado' => $documentotipo_matriculado, 

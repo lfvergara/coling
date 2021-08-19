@@ -1,4 +1,3 @@
-ob_start();
 <?php
 require_once "modules/movimientofinanciero/model.php";
 require_once "modules/movimientofinanciero/view.php";
@@ -7,7 +6,6 @@ require_once "modules/movimientofinanciero/view.php";
 class MovimientoFinancieroController {
 
 	function __construct() {
-		ob_end_clean();
 		$this->model = new MovimientoFinanciero();
 		$this->view = new MovimientoFinancieroView();
 	}

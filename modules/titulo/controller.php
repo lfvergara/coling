@@ -1,4 +1,3 @@
-ob_start();
 <?php
 require_once "modules/titulo/model.php";
 require_once "modules/titulo/view.php";
@@ -7,7 +6,6 @@ require_once "modules/titulo/view.php";
 class TituloController {
 
 	function __construct() {
-		ob_end_clean();
 		$this->model = new Titulo();
 		$this->view = new TituloView();
 	}

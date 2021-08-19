@@ -1,4 +1,3 @@
-﻿ob_start();
 <?php
 require_once "modules/matriculado/model.php";
 require_once "modules/matriculado/view.php";
@@ -18,7 +17,6 @@ require_once "modules/usuario/model.php";
 
 class MatriculadoController {
 	function __construct() {
-		ob_end_clean();
 		$this->model = new Matriculado();
 		$this->view = new MatriculadoView();
 	}

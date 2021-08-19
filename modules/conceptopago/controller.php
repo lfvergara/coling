@@ -1,4 +1,3 @@
-ob_start();
 <?php
 require_once "modules/conceptopago/model.php";
 require_once "modules/conceptopago/view.php";
@@ -7,7 +6,6 @@ require_once "modules/conceptopago/view.php";
 class ConceptoPagoController {
 
 	function __construct() {
-		ob_end_clean();
 		$this->model = new ConceptoPago();
 		$this->view = new ConceptoPagoView();
 	}

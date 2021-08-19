@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once "modules/reporte/view.php";
 require_once "modules/matriculado/model.php";
 require_once "modules/matricula/model.php";

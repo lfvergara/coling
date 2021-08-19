@@ -1,4 +1,3 @@
-ob_start();
 <?php
 require_once "modules/universidad/model.php";
 require_once "modules/universidad/view.php";
@@ -8,7 +7,6 @@ require_once "modules/provincia/model.php";
 class UniversidadController {
 
 	function __construct() {
-		ob_end_clean();
 		$this->model = new Universidad();
 		$this->view = new UniversidadView();
 	}

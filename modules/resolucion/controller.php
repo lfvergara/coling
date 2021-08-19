@@ -1,4 +1,3 @@
-ob_start();
 <?php
 require_once "modules/resolucion/model.php";
 require_once "modules/resolucion/view.php";
@@ -7,7 +6,6 @@ require_once "modules/resolucion/view.php";
 class ResolucionController {
 
 	function __construct() {
-		ob_end_clean();
 		$this->model = new Resolucion();
 		$this->view = new ResolucionView();
 	}

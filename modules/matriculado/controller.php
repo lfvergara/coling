@@ -644,15 +644,68 @@ class MatriculadoController {
 		$this->model->get();
 
 		$resultadoAFIP = FacturaAFIPTool()->facturarAFIP($cm, $tfm, $this->model, $valor_abonado);
-		
-
-
-
-
-
-
-		
+		print_r($resultadoAFIP);exit;
 		if (is_array($resultadoAFIP)) {
+			$mtpm = new MovimientoTipoPago();
+			$mtpm->denominacion = $movimientotipopago_denominacion;
+			$mtpm->numero_movimiento = $numero_movimiento;
+			$mtpm->fecha_vencimiento = $fecha_vencimiento;
+			$mtpm->estado = 1;
+			$mtpm->save();
+			$movimientotipopago_id = $mtpm->movimientotipopago_id;
+
+			$ccmm = new CuentaCorrienteMatriculado();
+			$ccmm->anio = date('Y');
+			$ccmm->valor_abonado = $valor_abonado;
+			$ccmm->valor_matricula = $valor_abonado;
+			$ccmm->fecha = date('Y-m-d');
+			$ccmm->hora = date('H:i:s');
+			$ccmm->habilitacion = 0;
+			$ccmm->tomo = 0;
+			$ccmm->numero_cuota = 1;
+			$ccmm->total_cuotas = 1;
+			$ccmm->estado = 1;
+			$ccmm->movimientotipopago_id = $movimientotipopago_id;
+			$ccmm->resolucion_id = 0;
+			$ccmm->matriculado_id = $matriculado_id;
+			$ccmm->matricula_id = $matricula_id;
+			$ccmm->usuario_id = $usuario_id;
+			$ccmm->conceptopago = $conceptopago;
+			$ccmm->save();
+			$cuentacorrientematriculado_id = $ccmm->cuentacorrientematriculado_id;
+
+			$cpm = new ComprobantePago();
+			$cpm->punto_venta = $punto_venta;
+			$cpm->numero_factura = $siguiente_factura;
+			$cpm->fecha = date('Y-m-d');
+			$cpm->hora = date('H:i:s');
+			$cpm->subtotal = $valor_abonado;
+			$cpm->importe_total = $valor_abonado;
+			$cpm->emitido = 1;
+			$cpm->cuentacorrientematriculado_id = $cuentacorrientematriculado_id;
+			$cpm->tipofactura = $tipofactura_id;
+			$cpm->save();
+			$comprobantepago_id = $cpm->comprobantepago_id;
+
+
+
+
+			
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 			$eam = new EgresoAFIP();
 			$eam->cae = $resultadoAFIP['CAE'];
 			$eam->fecha = date('Y-m-d');
@@ -683,33 +736,9 @@ class MatriculadoController {
 
 		
 
-		$mtpm = new MovimientoTipoPago();
-		$mtpm->denominacion = $movimientotipopago_denominacion;
-		$mtpm->numero_movimiento = $numero_movimiento;
-		$mtpm->fecha_vencimiento = $fecha_vencimiento;
-		$mtpm->estado = 1;
-		$mtpm->save();
-		$movimientotipopago_id = $mtpm->movimientotipopago_id;
 		
-		$ccmm = new CuentaCorrienteMatriculado();
-		$ccmm->anio = date('Y');
-		$ccmm->valor_abonado = $valor_abonado;
-		$ccmm->valor_matricula = $valor_abonado;
-		$ccmm->fecha = date('Y-m-d');
-		$ccmm->hora = date('H:i:s');
-		$ccmm->habilitacion = 0;
-		$ccmm->tomo = 0;
-		$ccmm->numero_cuota = 1;
-		$ccmm->total_cuotas = 1;
-		$ccmm->estado = 1;
-		$ccmm->movimientotipopago_id = $movimientotipopago_id;
-		$ccmm->resolucion_id = 0;
-		$ccmm->matriculado_id = $matriculado_id;
-		$ccmm->matricula_id = $matricula_id;
-		$ccmm->usuario_id = $usuario_id;
-		$ccmm->conceptopago = filter_input(INPUT_POST, 'conceptopago');
-		$ccmm->save();
-		$cuentacorrientematriculado_id = $ccmm->cuentacorrientematriculado_id;
+		
+		
 
 		
 
@@ -729,19 +758,8 @@ class MatriculadoController {
 		}
 		*/
 
-		$siguiente_factura = FacturaAFIPTool()->traerSiguienteFacturaAFIP($tipofactura_afip);
-		$cpm = new ComprobantePago();
-		$cpm->punto_venta = $punto_venta;
-		$cpm->numero_factura = $siguiente_factura;
-		$cpm->fecha = date('Y-m-d');
-		$cpm->hora = date('H:i:s');
-		$cpm->subtotal = $valor_abonado;
-		$cpm->importe_total = $valor_abonado;
-		$cpm->emitido = 1;
-		$cpm->cuentacorrientematriculado_id = $cuentacorrientematriculado_id;
-		$cpm->tipofactura = $tipofactura_id;
-		$cpm->save();
-		$comprobantepago_id = $cpm->comprobantepago_id;
+		
+		
 
 		$this->model->matriculado_id = $matriculado_id;
 		$this->model->get();

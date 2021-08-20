@@ -8,6 +8,8 @@ class ComprobantePago extends StandardObject {
 		$this->comprobantepago_id = 0;
 		$this->punto_venta = 0;
 		$this->numero_factura = 0;
+		$this->cae = 0;
+		$this->cae_vencimiento = '';
 		$this->fecha = '';
 		$this->hora = '';
 		$this->subtotal = 0.00;

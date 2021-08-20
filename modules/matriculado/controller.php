@@ -634,6 +634,7 @@ class MatriculadoController {
 		$cm = new Configuracion();
         $cm->configuracion_id = 1;
         $cm->get();
+        $punto_venta = $cm->punto_venta;
         
 		$tipofactura_id = 8; // Para recibos tipo C - CONSUMIDOR FINAL
 		$tfm = new TipoFactura();
@@ -676,7 +677,9 @@ class MatriculadoController {
 
 			$cpm = new ComprobantePago();
 			$cpm->punto_venta = $punto_venta;
-			$cpm->numero_factura = $siguiente_factura;
+			$cpm->numero_factura = $resultadoAFIP['NUMFACTURA'];
+			$cpm->cae = $resultadoAFIP['CAE'];
+			$cpm->cae_vencimiento = $resultadoAFIP['CAEFchVto'];
 			$cpm->fecha = date('Y-m-d');
 			$cpm->hora = date('H:i:s');
 			$cpm->subtotal = $valor_abonado;
@@ -687,105 +690,32 @@ class MatriculadoController {
 			$cpm->save();
 			$comprobantepago_id = $cpm->comprobantepago_id;
 
-
-
-
-			
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-			$eam = new EgresoAFIP();
-			$eam->cae = $resultadoAFIP['CAE'];
-			$eam->fecha = date('Y-m-d');
-			$eam->punto_venta = $cm->punto_venta;
-			$eam->numero_factura = $resultadoAFIP['NUMFACTURA'];
-			$eam->vencimiento = $resultadoAFIP['CAEFchVto'];
-			$eam->tipofactura = $tipofactura_id;
-			$eam->egreso_id = $egreso_id;
-			$eam->save();
-
-			$this->model->egreso_id = $egreso_id;
+			$this->model->matriculado_id = $matriculado_id;
 			$this->model->get();
-			$this->model->emitido = 1;
-			$this->model->save();
-		}
-		/* ---------------------------------------------------------------------------------------- */
 
-
-
-
-
-
-
-
-
-
-
-
-		
-
-		
-		
-		
-
-		
-
-        /*
-		if ($tipofactura_id != 2) {
+			$mm = new Matricula();
+			$mm->matricula_id = $matricula_id;
+			$mm->get();
 			
-			$tipofactura_afip = $tfm->afip_id;
-			$siguiente_factura = FacturaAFIPTool()->traerSiguienteFacturaAFIP($tipofactura_afip);
+			$ccmm = new CuentaCorrienteMatriculado();
+			$ccmm->cuentacorrientematriculado_id = $cuentacorrientematriculado_id;
+			$ccmm->get();
+
+			$cpm = new ComprobantePago();
+			$cpm->comprobantepago_id = $comprobantepago_id;
+			$cpm->get();
+
+			$facturaPDFHelper = new FacturaPDF();
+			$facturaPDFHelper->comprobante_pago($this->model, $mm, $ccmm, $cpm, $cm);
 			
-		} else {
-			$select = "(MAX(cp.numero_factura) + 1 ) AS SIGUIENTE_NUMERO ";
-			$from = "comprobantepago cp";
-			$where = "cp.tipofactura = 2";
-			$groupby = "cp.tipofactura";
-			$nuevo_numero = CollectorCondition()->get('ComprobantePago', $where, 4, $from, $select, $groupby);
-			$nuevo_numero = (!is_array($nuevo_numero)) ? 1 : $nuevo_numero[0]['SIGUIENTE_NUMERO'];
+			$this->model = new Matriculado();
+			$this->model->matriculado_id = $matriculado_id;
+			$this->model->get();
+
+			$emailHelper = new EmailHelper();
+			$emailHelper->envia_comprobante($this->model, $mm, $ccmm, $cpm);
 		}
-		*/
-
 		
-		
-
-		$this->model->matriculado_id = $matriculado_id;
-		$this->model->get();
-
-		$mm = new Matricula();
-		$mm->matricula_id = $matricula_id;
-		$mm->get();
-		
-		$ccmm = new CuentaCorrienteMatriculado();
-		$ccmm->cuentacorrientematriculado_id = $cuentacorrientematriculado_id;
-		$ccmm->get();
-
-		$cpm = new ComprobantePago();
-		$cpm->comprobantepago_id = $comprobantepago_id;
-		$cpm->get();
-
-		$facturaPDFHelper = new FacturaPDF();
-		$facturaPDFHelper->comprobante_pago($this->model, $mm, $ccmm, $cpm, $cm);
-		
-		$this->model = new Matriculado();
-		$this->model->matriculado_id = $matriculado_id;
-		$this->model->get();
-
-		$emailHelper = new EmailHelper();
-		$emailHelper->envia_comprobante($this->model, $mm, $ccmm, $cpm);
-
 		header("Location: " . URL_APP . "/matriculado/matriculas/{$matriculado_id}");
 	}
 

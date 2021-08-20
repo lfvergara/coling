@@ -645,7 +645,6 @@ class MatriculadoController {
 		$this->model->get();
 
 		$resultadoAFIP = FacturaAFIPTool()->facturarAFIP($cm, $tfm, $this->model, $valor_abonado);
-		print_r($resultadoAFIP);exit;
 		if (is_array($resultadoAFIP)) {
 			$mtpm = new MovimientoTipoPago();
 			$mtpm->denominacion = $movimientotipopago_denominacion;

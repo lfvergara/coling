@@ -628,13 +628,14 @@ class MatriculadoController {
 		$matricula_id = filter_input(INPUT_POST, 'matricula_id');
 		$valor_abonado = filter_input(INPUT_POST, 'importe');
 		$usuario_id = $_SESSION["data-login-" . APP_ABREV]["usuario-usuario_id"];
-
+		$conceptopago = filter_input(INPUT_POST, 'conceptopago');
+		
 		/* ---------------------------------------------------------------------------------------- */
 		$cm = new Configuracion();
         $cm->configuracion_id = 1;
         $cm->get();
         
-		$tipofactura_id = 3; // Para facturas tipo B - CONSUMIDOR FINAL
+		$tipofactura_id = 8; // Para recibos tipo C - CONSUMIDOR FINAL
 		$tfm = new TipoFactura();
 		$tfm->tipofactura_id = $tipofactura_id;
 		$tfm->get();
@@ -642,7 +643,15 @@ class MatriculadoController {
 		$this->model->matriculado_id = $matriculado_id;
 		$this->model->get();
 
-		$resultadoAFIP = FacturaAFIPTool()->facturarAFIP($cm, $tfm, $this->model);
+		$resultadoAFIP = FacturaAFIPTool()->facturarAFIP($cm, $tfm, $this->model, $valor_abonado);
+		
+
+
+
+
+
+
+		
 		if (is_array($resultadoAFIP)) {
 			$eam = new EgresoAFIP();
 			$eam->cae = $resultadoAFIP['CAE'];

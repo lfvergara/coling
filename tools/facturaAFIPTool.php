@@ -28,8 +28,8 @@ class FacturaAFIPTool {
         $array_discriminado = $this->prepara_array_discriminado($obj_matriculado, $importe);
         $array_final = array_merge($nueva_factura, $array_discriminado);
         $data = $this->generaArrayData($array_final);
-        print_r($data);exit;
         $res = $afip->ElectronicBilling->CreateVoucher($data);
+        print_r($data);exit;
         $res['NUMFACTURA'] = $nueva_factura['nueva_factura'];
         return $res;
     }

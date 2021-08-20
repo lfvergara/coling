@@ -54,11 +54,11 @@ class FacturaAFIPTool {
         $sum_baseimp_5 = 0;
         $sum_baseimp_2_5 = 0;
         $sum_baseimp_0 = 0;
-        $sum_neto = 0;
+        $sum_neto = $importe;
         $sum_iva = 0;        
 
         // DISCRIMINO  EXENTOS Y NO GRAVADOS
-        $sum_exentos = $importe;
+        $sum_exentos = 0;
         $sum_nogravados = 0;
         
         // APLICO DESCUENTO DE LA FACTURA

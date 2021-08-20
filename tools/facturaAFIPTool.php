@@ -171,7 +171,7 @@ class FacturaAFIPTool {
             'ImpTrib'   => 0,   //Importe total de tributos
             'MonId'     => 'PES', //Tipo de moneda usada en el comprobante (ver tipos disponibles)('PES' para pesos argentinos) 
             'MonCotiz'  => 1,     // Cotización de la moneda usada (1 para pesos argentinos) 
-            'Iva'       => $array_alicuotas, 
+            /*'Iva'       => $array_alicuotas, */
         );
 
         return $data;

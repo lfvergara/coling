@@ -491,6 +491,7 @@ class MatriculadoController {
 	}
 
 	function ingresar_pago() {
+		require_once "tools/facturaAFIPTool.php";
 		require_once "tools/facturaPDFTool.php";
 		require_once "tools/email.php";
 		
@@ -515,87 +516,89 @@ class MatriculadoController {
 
 		$matriculado_id = filter_input(INPUT_POST, 'matriculado_id');
 		$matricula_id = filter_input(INPUT_POST, 'matricula_id');
+		$valor_abonado = filter_input(INPUT_POST, 'importe');
+		$usuario_id = $_SESSION["data-login-" . APP_ABREV]["usuario-usuario_id"];
+		$conceptopago = filter_input(INPUT_POST, 'conceptopago');
 		$cuentacorrientematriculado_id = filter_input(INPUT_POST, 'cuentacorrientematriculado_id');
-		$valor_abonado = filter_input(INPUT_POST, 'valor_abonado');
-
-		$ccmm = new CuentaCorrienteMatriculado();
-		$ccmm->cuentacorrientematriculado_id = filter_input(INPUT_POST, 'cuentacorrientematriculado_id');
-		$ccmm->get();
-		$movimientotipopago_id = $ccmm->movimientotipopago_id;
 		
-		$ccmm->valor_abonado = filter_input(INPUT_POST, 'valor_abonado');
-		$ccmm->fecha = date('Y-m-d');
-		$ccmm->hora = date('H-i-s');
-		$ccmm->conceptopago = filter_input(INPUT_POST, 'conceptopago');
-		$ccmm->resolucion_id = filter_input(INPUT_POST, 'resolucion');
-		$ccmm->estado = 1;
-		$ccmm->save();
-
-		$mtpm = new MovimientoTipoPago();
-		$mtpm->movimientotipopago_id = $movimientotipopago_id;
-		$mtpm->get();
-		$mtpm->denominacion = $movimientotipopago_denominacion;
-		$mtpm->numero_movimiento = $numero_movimiento;
-		$mtpm->fecha_vencimiento = $fecha_vencimiento;
-		$mtpm->estado = 1;
-		$mtpm->save();
-
+		/* ---------------------------------------------------------------------------------------- */
 		$cm = new Configuracion();
         $cm->configuracion_id = 1;
         $cm->get();
-        $tipofactura_id = $cm->tipofactura; 
+        $punto_venta = $cm->punto_venta;
+        
+		$tipofactura_id = 8; // Para recibos tipo C - CONSUMIDOR FINAL
+		$tfm = new TipoFactura();
+		$tfm->tipofactura_id = $tipofactura_id;
+		$tfm->get();
 
-		if ($tipofactura_id != 2) {
-			/*
-			$tipofactura_afip = $tfm->afip_id;
-			$siguiente_factura = FacturaAFIPTool()->traerSiguienteFacturaAFIP($tipofactura_afip);
-			*/
-		} else {
-			$select = "(MAX(cp.numero_factura) + 1 ) AS SIGUIENTE_NUMERO ";
-			$from = "comprobantepago cp";
-			$where = "cp.tipofactura = 2";
-			$groupby = "cp.tipofactura";
-			$nuevo_numero = CollectorCondition()->get('ComprobantePago', $where, 4, $from, $select, $groupby);
-			$nuevo_numero = (!is_array($nuevo_numero)) ? 1 : $nuevo_numero[0]['SIGUIENTE_NUMERO'];
+		$this->model->matriculado_id = $matriculado_id;
+		$this->model->get();
+
+		$resultadoAFIP = FacturaAFIPTool()->facturarAFIP($cm, $tfm, $this->model, $valor_abonado);
+		if (is_array($resultadoAFIP)) {
+			$ccmm = new CuentaCorrienteMatriculado();
+			$ccmm->cuentacorrientematriculado_id = filter_input(INPUT_POST, 'cuentacorrientematriculado_id');
+			$ccmm->get();
+			$movimientotipopago_id = $ccmm->movimientotipopago_id;
+			
+			$ccmm->valor_abonado = filter_input(INPUT_POST, 'valor_abonado');
+			$ccmm->fecha = date('Y-m-d');
+			$ccmm->hora = date('H-i-s');
+			$ccmm->conceptopago = filter_input(INPUT_POST, 'conceptopago');
+			$ccmm->resolucion_id = filter_input(INPUT_POST, 'resolucion');
+			$ccmm->estado = 1;
+			$ccmm->save();
+
+			$mtpm = new MovimientoTipoPago();
+			$mtpm->movimientotipopago_id = $movimientotipopago_id;
+			$mtpm->get();
+			$mtpm->denominacion = $movimientotipopago_denominacion;
+			$mtpm->numero_movimiento = $numero_movimiento;
+			$mtpm->fecha_vencimiento = $fecha_vencimiento;
+			$mtpm->estado = 1;
+			$mtpm->save();
+
+			$cpm = new ComprobantePago();
+			$cpm->punto_venta = $punto_venta;
+			$cpm->numero_factura = $resultadoAFIP['NUMFACTURA'];
+			$cpm->cae = $resultadoAFIP['CAE'];
+			$cpm->cae_vencimiento = $resultadoAFIP['CAEFchVto'];
+			$cpm->fecha = date('Y-m-d');
+			$cpm->hora = date('H:i:s');
+			$cpm->subtotal = $valor_abonado;
+			$cpm->importe_total = $valor_abonado;
+			$cpm->emitido = 1;
+			$cpm->cuentacorrientematriculado_id = $cuentacorrientematriculado_id;
+			$cpm->tipofactura = $tipofactura_id;
+			$cpm->save();
+			$comprobantepago_id = $cpm->comprobantepago_id;
+
+			$this->model->matriculado_id = $matriculado_id;
+			$this->model->get();
+
+			$mm = new Matricula();
+			$mm->matricula_id = $matricula_id;
+			$mm->get();
+			
+			$ccmm = new CuentaCorrienteMatriculado();
+			$ccmm->cuentacorrientematriculado_id = $cuentacorrientematriculado_id;
+			$ccmm->get();
+
+			$cpm = new ComprobantePago();
+			$cpm->comprobantepago_id = $comprobantepago_id;
+			$cpm->get();
+
+			$facturaPDFHelper = new FacturaPDF();
+			$facturaPDFHelper->comprobante_pago($this->model, $mm, $ccmm, $cpm, $cm);
+			
+			$this->model = new Matriculado();
+			$this->model->matriculado_id = $matriculado_id;
+			$this->model->get();
+
+			$emailHelper = new EmailHelper();
+			$emailHelper->envia_comprobante($this->model, $mm, $ccmm, $cpm);
 		}
-
-		$cpm = new ComprobantePago();
-		$cpm->punto_venta = $punto_venta;
-		$cpm->numero_factura = $nuevo_numero;
-		$cpm->fecha = date('Y-m-d');
-		$cpm->hora = date('H:i:s');
-		$cpm->subtotal = $valor_abonado;
-		$cpm->importe_total = $valor_abonado;
-		$cpm->emitido = 1;
-		$cpm->cuentacorrientematriculado_id = $cuentacorrientematriculado_id;
-		$cpm->tipofactura = $tipofactura_id;
-		$cpm->save();
-		$comprobantepago_id = $cpm->comprobantepago_id;
-
-		$this->model->matriculado_id = $matriculado_id;
-		$this->model->get();
-
-		$mm = new Matricula();
-		$mm->matricula_id = $matricula_id;
-		$mm->get();
-		
-		$ccmm = new CuentaCorrienteMatriculado();
-		$ccmm->cuentacorrientematriculado_id = $cuentacorrientematriculado_id;
-		$ccmm->get();
-
-		$cpm = new ComprobantePago();
-		$cpm->comprobantepago_id = $comprobantepago_id;
-		$cpm->get();
-
-		$facturaPDFHelper = new FacturaPDF();
-		$facturaPDFHelper->comprobante_pago($this->model, $mm, $ccmm, $cpm, $cm);
-		
-		$this->model = new Matriculado();
-		$this->model->matriculado_id = $matriculado_id;
-		$this->model->get();
-
-		$emailHelper = new EmailHelper();
-		$emailHelper->envia_comprobante($this->model, $mm, $ccmm, $cpm);
 
 		header("Location: " . URL_APP . "/matriculado/gestionar_matricula/{$matriculado_id}@{$matricula_id}");
 	}

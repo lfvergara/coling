@@ -944,7 +944,7 @@ class MatriculadoController {
 		$cm->get();
 
 		$CUIT = $cm->cuit;
-        $afip = new Afip(array('CUIT' => $CUIT, 'production' => false));
+        $afip = new Afip(array('CUIT' => $CUIT, 'production' => true));
         $voucher_types = $afip->ElectronicBilling->GetVoucherTypes();
         print_r($voucher_types);exit;
         return $voucher_types;

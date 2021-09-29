@@ -175,7 +175,7 @@ class MovimientoFinancieroController {
 				   mtp.denominacion AS TIPOPAGO, ccm.valor_abonado AS VALOR, ccm.cuentacorrientematriculado_id AS CCMID, 
 				   ccm.matriculado_id AS MATRICULADOID, ccm.matricula_id AS MATRICULAID, cp.denominacion AS CONCEPTO, CONCAT(m.apellido, ' ', m.nombre) AS MATRICULADO";
 		$from = "cuentacorrientematriculado ccm INNER JOIN movimientotipopago mtp ON ccm.movimientotipopago_id = mtp.movimientotipopago_id INNER JOIN conceptopago cp ON ccm.conceptopago = cp.conceptopago_id INNER JOIN matriculado m ON ccm.matriculado_id = m.matriculado_id";
-		$where = "cp.tipo IN (2,4) AND ccm.estado = 1 ORDER BY ccm.anio DESC";
+		$where = "cp.tipo IN (2,4) AND ccm.estado = 1 AND ccm.fecha = '{$fecha_sys}' ORDER BY ccm.anio DESC";
 		$movimientosmatriculado_collection = CollectorCondition()->get('CuentaCorrienteMatriculado', $where, 4, $from, $select);
 
 		$this->view->diario($movimientosmatriculado_collection);

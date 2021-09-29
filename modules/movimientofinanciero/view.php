@@ -114,5 +114,15 @@ class MovimientoFinancieroView extends View {
 		$template = $this->render_template($render);
 		print $template;	
 	}
+
+	function diario($movimientosmatriculado_collection) {
+		$gui = file_get_contents("static/modules/movimientofinanciero/diario.html");
+		$gui_tbl_movimientosmatriculado = file_get_contents("static/modules/movimientofinanciero/tbl_movimientosmatriculado.html");	
+		$gui_tbl_movimientosmatriculado = $this->render_regex_dict('TBL_MOVIMIENTOMATRICULADO', $gui_tbl_movimientosmatriculado, $movimientosmatriculado_collection);
+		$render = str_replace('{tbl_movimientomatriculado}', $gui_tbl_movimientosmatriculado, $gui);
+		$render = $this->render_breadcrumb($render);
+		$template = $this->render_template($render);
+		print $template;
+	}
 }
 ?>

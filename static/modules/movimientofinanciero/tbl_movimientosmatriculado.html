@@ -1,0 +1,19 @@
+<!--TBL_MOVIMIENTOMATRICULADO-->
+<tr style="font-size: 12px;">
+    <td>CUOTAS</td>
+    <td>FECHA</td>
+    <td>PERIODO</td>
+    <td>HABILITACION</td>
+    <td>TOMO</td>
+    <td>CONCEPTO</td>
+    <td>TIPOPAGO</td>
+    <td>$VALOR</td>
+    <td>
+        <center>
+            <button class="btn btn-success btn-xs" onclick="traerFormAbonar(MATRICULADOID,MATRICULAID,CCMID);" style="display: BTNABONAR;" title="Abonar cuota"><i class="fa fa-usd"></i></button>
+            <button class="btn btn-danger btn-xs" onclick="confirma_formulario(4, '{url_app}/matriculado/anular_pago_matricula/MATRICULADOID@MATRICULAID@CCMID');" style="display: BTNANULAR;" title="Anular Pago"><i class="fa fa-ban"></i></button>
+            <button class="btn btn-danger btn-xs" onclick="confirma_formulario(4, '{url_app}/matriculado/eliminar_pago_matricula/MATRICULADOID@MATRICULAID@CCMID');" style="display: BTNBORRAR;" title="Eliminar pago"><i class="fa fa-trash-o"></i></button>
+        </center>
+    </td>
+</tr>
+<!--TBL_MOVIMIENTOMATRICULADO-->

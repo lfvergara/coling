@@ -1,6 +1,7 @@
 <?php
 require_once "modules/movimientofinanciero/model.php";
 require_once "modules/movimientofinanciero/view.php";
+require_once "modules/cuentacorrientematriculado/model.php";
 
 
 class MovimientoFinancieroController {
@@ -164,6 +165,20 @@ class MovimientoFinancieroController {
 				header("Location: " . URL_APP . "/movimientofinanciero/panel");
 				break;
 		}
+	}
+
+	function diario() {
+		SessionHandler()->check_session();
+		$fecha_sys = date('Y-m-d');
+
+		$select = "CONCAT(ccm.numero_cuota, '/', ccm.total_cuotas) AS CUOTAS, ccm.fecha AS FECHA, ccm.anio AS PERIODO, 
+				   mtp.denominacion AS TIPOPAGO, ccm.valor_abonado AS VALOR, ccm.cuentacorrientematriculado_id AS CCMID, 
+				   ccm.matriculado_id AS MATRICULADOID, ccm.matricula_id AS MATRICULAID, cp.denominacion AS CONCEPTO, CONCAT(m.apellido, ' ', m.nombre) AS MATRICULADO";
+		$from = "cuentacorrientematriculado ccm INNER JOIN movimientotipopago mtp ON ccm.movimientotipopago_id = mtp.movimientotipopago_id INNER JOIN conceptopago cp ON ccm.conceptopago = cp.conceptopago_id INNER JOIN matriculado m ON ccm.matriculado_id = m.matriculado_id";
+		$where = "cp.tipo IN (2,4) AND ccm.estado = 1 ORDER BY ccm.anio DESC";
+		$movimientosmatriculado_collection = CollectorCondition()->get('CuentaCorrienteMatriculado', $where, 4, $from, $select);
+
+		$this->view->diario($movimientosmatriculado_collection);
 	}
 }
 ?>

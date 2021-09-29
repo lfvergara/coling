@@ -115,11 +115,13 @@ class MovimientoFinancieroView extends View {
 		print $template;	
 	}
 
-	function diario($movimientosmatriculado_collection) {
+	function diario($movimientosmatriculado_collection, $caja_total, $titulo) {
 		$gui = file_get_contents("static/modules/movimientofinanciero/diario.html");
 		$gui_tbl_movimientosmatriculado = file_get_contents("static/modules/movimientofinanciero/tbl_movimientosmatriculado.html");	
 		$gui_tbl_movimientosmatriculado = $this->render_regex_dict('TBL_MOVIMIENTOMATRICULADO', $gui_tbl_movimientosmatriculado, $movimientosmatriculado_collection);
 		$render = str_replace('{tbl_movimientomatriculado}', $gui_tbl_movimientosmatriculado, $gui);
+		$render = str_replace('{caja_total}', $caja_total, $render);
+		$render = str_replace('{titulo}', $titulo, $render);
 		$render = $this->render_breadcrumb($render);
 		$template = $this->render_template($render);
 		print $template;

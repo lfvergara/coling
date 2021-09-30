@@ -174,8 +174,8 @@ class MovimientoFinancieroController {
 
 		$select = "CONCAT(ccm.numero_cuota, '/', ccm.total_cuotas) AS CUOTAS, ccm.fecha AS FECHA, ccm.anio AS PERIODO, 
 				   mtp.denominacion AS TIPOPAGO, ccm.valor_abonado AS VALOR, ccm.cuentacorrientematriculado_id AS CCMID, 
-				   ccm.matriculado_id AS MATRICULADOID, ccm.matricula_id AS MATRICULAID, cp.denominacion AS CONCEPTO, CONCAT(m.apellido, ' ', m.nombre) AS MATRICULADO, cp.comprobantepago_id CPID";
-		$from = "cuentacorrientematriculado ccm INNER JOIN movimientotipopago mtp ON ccm.movimientotipopago_id = mtp.movimientotipopago_id INNER JOIN conceptopago cp ON ccm.conceptopago = cp.conceptopago_id INNER JOIN matriculado m ON ccm.matriculado_id = m.matriculado_id INNER JOIN comprobantepago cp ON ccm.cuentacorrientematriculado_id = cp.cuentacorrientematriculado_id";
+				   ccm.matriculado_id AS MATRICULADOID, ccm.matricula_id AS MATRICULAID, cp.denominacion AS CONCEPTO, CONCAT(m.apellido, ' ', m.nombre) AS MATRICULADO, cop.comprobantepago_id CPID";
+		$from = "cuentacorrientematriculado ccm INNER JOIN movimientotipopago mtp ON ccm.movimientotipopago_id = mtp.movimientotipopago_id INNER JOIN conceptopago cp ON ccm.conceptopago = cp.conceptopago_id INNER JOIN matriculado m ON ccm.matriculado_id = m.matriculado_id INNER JOIN comprobantepago cop ON ccm.cuentacorrientematriculado_id = cop.cuentacorrientematriculado_id";
 		$where = "cp.tipo IN (2,4) AND ccm.estado = 1 ORDER BY ccm.anio DESC";
 		//$where = "cp.tipo IN (2,4) AND ccm.estado = 1 AND ccm.fecha = '{$fecha_sys}' ORDER BY ccm.anio DESC";
 		$movimientosmatriculado_collection = CollectorCondition()->get('CuentaCorrienteMatriculado', $where, 4, $from, $select);
@@ -198,8 +198,8 @@ class MovimientoFinancieroController {
 
 		$select = "CONCAT(ccm.numero_cuota, '/', ccm.total_cuotas) AS CUOTAS, ccm.fecha AS FECHA, ccm.anio AS PERIODO, 
 				   mtp.denominacion AS TIPOPAGO, ccm.valor_abonado AS VALOR, ccm.cuentacorrientematriculado_id AS CCMID, 
-				   ccm.matriculado_id AS MATRICULADOID, ccm.matricula_id AS MATRICULAID, cp.denominacion AS CONCEPTO, CONCAT(m.apellido, ' ', m.nombre) AS MATRICULADO, cp.comprobantepago_id CPID";
-		$from = "cuentacorrientematriculado ccm INNER JOIN movimientotipopago mtp ON ccm.movimientotipopago_id = mtp.movimientotipopago_id INNER JOIN conceptopago cp ON ccm.conceptopago = cp.conceptopago_id INNER JOIN matriculado m ON ccm.matriculado_id = m.matriculado_id INNER JOIN comprobantepago cp ON ccm.cuentacorrientematriculado_id = cp.cuentacorrientematriculado_id";
+				   ccm.matriculado_id AS MATRICULADOID, ccm.matricula_id AS MATRICULAID, cp.denominacion AS CONCEPTO, CONCAT(m.apellido, ' ', m.nombre) AS MATRICULADO, cop.comprobantepago_id CPID";
+		$from = "cuentacorrientematriculado ccm INNER JOIN movimientotipopago mtp ON ccm.movimientotipopago_id = mtp.movimientotipopago_id INNER JOIN conceptopago cp ON ccm.conceptopago = cp.conceptopago_id INNER JOIN matriculado m ON ccm.matriculado_id = m.matriculado_id INNER JOIN comprobantepago cop ON ccm.cuentacorrientematriculado_id = cop.cuentacorrientematriculado_id";
 		$where = "cp.tipo IN (2,4) AND ccm.estado = 1 AND ccm.fecha BETWEEN '{$fecha_desde}' AND '{$fecha_hasta}' ORDER BY ccm.anio DESC";
 		$movimientosmatriculado_collection = CollectorCondition()->get('CuentaCorrienteMatriculado', $where, 4, $from, $select);
 		$movimientosmatriculado_collection = (is_array($movimientosmatriculado_collection) AND !empty($movimientosmatriculado_collection)) ? $movimientosmatriculado_collection : array();

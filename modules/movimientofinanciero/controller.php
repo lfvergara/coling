@@ -2,7 +2,7 @@
 require_once "modules/movimientofinanciero/model.php";
 require_once "modules/movimientofinanciero/view.php";
 require_once "modules/cuentacorrientematriculado/model.php";
-require_once "core/helpers/files.php";
+require_once "core/helpers/file.php";
 
 
 class MovimientoFinancieroController {

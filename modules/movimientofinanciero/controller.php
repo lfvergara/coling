@@ -2,6 +2,7 @@
 require_once "modules/movimientofinanciero/model.php";
 require_once "modules/movimientofinanciero/view.php";
 require_once "modules/cuentacorrientematriculado/model.php";
+require_once "core/helpers/files.php";
 
 
 class MovimientoFinancieroController {
@@ -211,6 +212,11 @@ class MovimientoFinancieroController {
 
 		$titulo = "Caja desde {$fecha_desde} hasta {$fecha_hasta}";
 		$this->view->diario($movimientosmatriculado_collection, $caja_total, $titulo);
+	}
+
+	function ver_archivo(){
+		SessionHandler()->check_session();
+		require_once "core/helpers/files.php";
 	}
 }
 ?>

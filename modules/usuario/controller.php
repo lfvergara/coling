@@ -169,7 +169,7 @@ class UsuarioController {
 		SessionHandler()->check_session();
 		$nivel = $_SESSION["data-login-" . APP_ABREV]["usuario-nivel"];
 		if ($nivel > 1) {
-            header("location:" . URL_APP . "/reporte/admin");
+            header("location:" . URL_APP . "/movimientofinanciero/diario");
         } else {
             header("location:" . URL_APP . "/reporte/operador");
         }

@@ -171,7 +171,7 @@ class UsuarioController {
 		if ($nivel > 1) {
             header("location:" . URL_APP . "/movimientofinanciero/diario");
         } else {
-            header("location:" . URL_APP . "/reporte/operador");
+            header("location:" . URL_APP . "/movimientofinanciero/diario");
         }
 	}
 

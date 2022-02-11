@@ -580,6 +580,7 @@ class MatriculadoController {
 			$this->model = new Matriculado();
 			$this->model->matriculado_id = $matriculado_id;
 			$this->model->get();
+			if ($cuit != 0) $this->model->documento = $cuit;
 
 			$emailHelper = new EmailHelper();
 			$emailHelper->envia_comprobante($this->model, $mm, $ccmm, $cpm);
@@ -684,6 +685,7 @@ class MatriculadoController {
 
 			$this->model->matriculado_id = $matriculado_id;
 			$this->model->get();
+			if ($cuit != 0) $this->model->documento = $cuit;
 
 			$mm = new Matricula();
 			$mm->matricula_id = $matricula_id;

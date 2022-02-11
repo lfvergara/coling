@@ -42,5 +42,13 @@ class TituloController {
 		$this->model->save();
 		header("Location: " . URL_APP . "/titulo/panel");
 	}
+
+	function editar_masivo() {
+		SessionHandler()->check_session();
+		$valor_matricula = filter_input(INPUT_POST, 'valor_matricula');
+		$this->model->valor_matricula = $valor_matricula;
+		$this->model->editar_masivo();
+		header("Location: " . URL_APP . "/titulo/panel");
+	}
 }
 ?>

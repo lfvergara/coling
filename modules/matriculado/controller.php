@@ -540,7 +540,6 @@ class MatriculadoController {
 
 			$cuit = filter_input(INPUT_POST, 'cuit');
 			$cuit = (is_null($cuit) OR empty($cuit)) ? 0 : $cuit;
-			if ($cuit != 0) $this->model->documento = $cuit;
 
 			$cpm = new ComprobantePago();
 			$cpm->punto_venta = $punto_venta;
@@ -561,6 +560,7 @@ class MatriculadoController {
 
 			$this->model->matriculado_id = $matriculado_id;
 			$this->model->get();
+			if ($cuit != 0) $this->model->documento = $cuit;
 
 			$mm = new Matricula();
 			$mm->matricula_id = $matricula_id;
@@ -664,7 +664,6 @@ class MatriculadoController {
 
 			$cuit = filter_input(INPUT_POST, 'cuit');
 			$cuit = (is_null($cuit) OR empty($cuit)) ? 0 : $cuit;
-			if ($cuit != 0) $this->model->documento = $cuit;
 
 			$cpm = new ComprobantePago();
 			$cpm->punto_venta = $punto_venta;
@@ -704,6 +703,7 @@ class MatriculadoController {
 			$this->model = new Matriculado();
 			$this->model->matriculado_id = $matriculado_id;
 			$this->model->get();
+			if ($cuit != 0) $this->model->documento = $cuit;
 
 			$emailHelper = new EmailHelper();
 			$emailHelper->envia_comprobante($this->model, $mm, $ccmm, $cpm);

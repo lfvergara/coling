@@ -23,16 +23,8 @@ class MatriculadoController {
 	}
 
 	function panel() {
-		$select = "m.matriculado_id AS ID, m.barrio AS BARRIO, pr.denominacion AS PROVINCIA, m.codigopostal AS CODPOSTAL, 
-				   CONCAT(m.apellido, ' ', m.nombre) AS MATRICULADO, CONCAT(dt.denominacion, ' ', m.documento) AS DOCUMENTO, 
-				   CONCAT(m.barrio, ' - ', m.domicilio) AS DOMICILIO,
-				   (SELECT im.valor FROM infocontacto im INNER JOIN infocontactomatriculado icm ON im.infocontacto_id = icm.compositor WHERE 
-				   icm.compuesto = m.matriculado_id AND denominacion = 'Celular') AS CELULAR, 
-				   (SELECT ic.valor FROM infocontacto ic INNER JOIN infocontactomatriculado icm ON ic.infocontacto_id = icm.compositor WHERE 
-				   icm.compuesto = m.matriculado_id AND denominacion = 'Email') AS EMAIL, IF(ma.matricula IS NULL, '-', ma.matricula) AS NUMMATRICULA";
-		$from = "matriculado m INNER JOIN provincia pr ON m.provincia = pr.provincia_id INNER JOIN 
-				 documentotipo dt ON m.documentotipo = dt.documentotipo_id LEFT JOIN matriculamatriculado mm ON m.matriculado_id = mm.compuesto LEFT JOIN
-				 matricula ma ON mm.compositor = ma.matricula_id";
+		$select = "m.matriculado_id AS ID, m.barrio AS BARRIO, pr.denominacion AS PROVINCIA, m.codigopostal AS CODPOSTAL, CONCAT(m.apellido, ' ', m.nombre) AS MATRICULADO, CONCAT(dt.denominacion, ' ', m.documento) AS DOCUMENTO, CONCAT(m.barrio, ' - ', m.domicilio) AS DOMICILIO, (SELECT im.valor FROM infocontacto im INNER JOIN infocontactomatriculado icm ON im.infocontacto_id = icm.compositor WHERE icm.compuesto = m.matriculado_id AND denominacion = 'Celular') AS CELULAR, (SELECT ic.valor FROM infocontacto ic INNER JOIN infocontactomatriculado icm ON ic.infocontacto_id = icm.compositor WHERE icm.compuesto = m.matriculado_id AND denominacion = 'Email') AS EMAIL, IF(ma.matricula IS NULL, '-', ma.matricula) AS NUMMATRICULA";
+		$from = "matriculado m INNER JOIN provincia pr ON m.provincia = pr.provincia_id INNER JOIN documentotipo dt ON m.documentotipo = dt.documentotipo_id LEFT JOIN matriculamatriculado mm ON m.matriculado_id = mm.compuesto LEFT JOIN matricula ma ON mm.compositor = ma.matricula_id";
 		$matriculado_collection = CollectorCondition()->get('Matriculado', NULL, 4, $from, $select);
 		$this->view->listar($matriculado_collection);
 	}
@@ -223,19 +215,13 @@ class MatriculadoController {
 		$where = "r.estado = 1 AND '{$fecha}' BETWEEN r.fecha_desde AND r.fecha_hasta";
 		$resolucion_collection = CollectorCondition()->get('Resolucion', $where, 4, $from, $select);
 
-		$select = "CONCAT(ccm.numero_cuota, '/', ccm.total_cuotas) AS CUOTAS, ccm.fecha AS FECHA, ccm.anio AS PERIODO, 
-				   mtp.denominacion AS TIPOPAGO, ccm.valor_abonado AS VALOR, ccm.cuentacorrientematriculado_id AS CCMID, 
-				   ccm.matriculado_id AS MATRICULADOID, ccm.matricula_id AS MATRICULAID, cp.denominacion AS CONCEPTO";
-		$from = "cuentacorrientematriculado ccm INNER JOIN movimientotipopago mtp ON ccm.movimientotipopago_id = mtp.movimientotipopago_id INNER JOIN
-				 conceptopago cp ON ccm.conceptopago = cp.conceptopago_id";
+		$select = "CONCAT(ccm.numero_cuota, '/', ccm.total_cuotas) AS CUOTAS, ccm.fecha AS FECHA, ccm.anio AS PERIODO, mtp.denominacion AS TIPOPAGO, ccm.valor_abonado AS VALOR, ccm.cuentacorrientematriculado_id AS CCMID, ccm.matriculado_id AS MATRICULADOID, ccm.matricula_id AS MATRICULAID, cp.denominacion AS CONCEPTO";
+		$from = "cuentacorrientematriculado ccm INNER JOIN movimientotipopago mtp ON ccm.movimientotipopago_id = mtp.movimientotipopago_id INNER JOIN conceptopago cp ON ccm.conceptopago = cp.conceptopago_id";
 		$where = "ccm.matriculado_id = {$matriculado_id} AND cp.tipo IN (2,4) AND ccm.estado = 1 ORDER BY ccm.anio DESC";
 		$movimientosmatriculado_collection = CollectorCondition()->get('CuentaCorrienteMatriculado', $where, 4, $from, $select);
 
-		$select = "CONCAT(ccm.numero_cuota, '/', ccm.total_cuotas) AS CUOTAS, ccm.fecha AS FECHA, ccm.anio AS PERIODO, 
-				   mtp.denominacion AS TIPOPAGO, ccm.valor_abonado AS VALOR, ccm.cuentacorrientematriculado_id AS CCMID, 
-				   ccm.matriculado_id AS MATRICULADOID, ccm.matricula_id AS MATRICULAID, cp.denominacion AS CONCEPTO";
-		$from = "cuentacorrientematriculado ccm INNER JOIN movimientotipopago mtp ON ccm.movimientotipopago_id = mtp.movimientotipopago_id INNER JOIN
-				 conceptopago cp ON ccm.conceptopago = cp.conceptopago_id";
+		$select = "CONCAT(ccm.numero_cuota, '/', ccm.total_cuotas) AS CUOTAS, ccm.fecha AS FECHA, ccm.anio AS PERIODO, mtp.denominacion AS TIPOPAGO, ccm.valor_abonado AS VALOR, ccm.cuentacorrientematriculado_id AS CCMID, ccm.matriculado_id AS MATRICULADOID, ccm.matricula_id AS MATRICULAID, cp.denominacion AS CONCEPTO";
+		$from = "cuentacorrientematriculado ccm INNER JOIN movimientotipopago mtp ON ccm.movimientotipopago_id = mtp.movimientotipopago_id INNER JOIN conceptopago cp ON ccm.conceptopago = cp.conceptopago_id";
 		$where = "ccm.matriculado_id = {$matriculado_id} AND cp.tipo IN (1) AND ccm.estado = 0 ORDER BY ccm.anio DESC";
 		$deudamatriculado_collection = CollectorCondition()->get('CuentaCorrienteMatriculado', $where, 4, $from, $select);
 
@@ -396,10 +382,8 @@ class MatriculadoController {
 	function buscar() {
 		SessionHandler()->check_session();
 		$buscar = filter_input(INPUT_POST, 'buscar');
-		$select = "m.matriculado_id AS matriculado_ID, m.barrio AS BARRIO, pr.denominacion AS PROVINCIA, m.codigopostal AS CODPOSTAL, 
-				   CONCAT(dt.denominacion, ' ', m.documento) AS DOCUMENTO";
-		$from = "matriculado m INNER JOIN provincia pr ON m.provincia = pr.provincia_id INNER JOIN 
-				 documentotipo dt ON m.documentotipo = dt.documentotipo_id";
+		$select = "m.matriculado_id AS matriculado_ID, m.barrio AS BARRIO, pr.denominacion AS PROVINCIA, m.codigopostal AS CODPOSTAL, CONCAT(dt.denominacion, ' ', m.documento) AS DOCUMENTO";
+		$from = "matriculado m INNER JOIN provincia pr ON m.provincia = pr.provincia_id INNER JOIN documentotipo dt ON m.documentotipo = dt.documentotipo_id";
 		$where = "m.denominacion LIKE '%{$buscar}%' OR m.documento LIKE '%{$buscar}%'";
 		$matriculado_collection = CollectorCondition()->get('Matriculado', $where, 4, $from, $select);
 		$this->view->listar($matriculado_collection);
@@ -454,13 +438,8 @@ class MatriculadoController {
 		$mm->matricula_id = $matricula_id;
 		$mm->get();
 		
-		$select = "CONCAT(ccm.numero_cuota, '/', ccm.total_cuotas) AS CUOTAS, CASE ccm.estado WHEN 0 THEN CONCAT('Venc. ', ccm.fecha) ELSE CONCAT('Pago ', ccm.fecha) END AS FECHA, 
-				   ccm.anio AS PERIODO, mtp.denominacion AS TIPOPAGO, ccm.valor_abonado AS VALOR, ccm.cuentacorrientematriculado_id AS CCMID, ccm.tomo AS TOMO, 
-				   ccm.matriculado_id AS MATRICULADOID, ccm.matricula_id AS MATRICULAID, cp.denominacion AS CONCEPTO, ccm.habilitacion AS HABILITACION,
-				   CASE ccm.estado WHEN 1 THEN 'none' ELSE 'inline-block' END AS BTNABONAR, CASE ccm.estado WHEN 1 THEN 'inline-block' ELSE 'none' END AS BTNANULAR,
-				   CASE ccm.estado WHEN 1 THEN 'none' ELSE 'inline-block' END AS BTNBORRAR";
-		$from = "cuentacorrientematriculado ccm INNER JOIN movimientotipopago mtp ON ccm.movimientotipopago_id = mtp.movimientotipopago_id INNER JOIN
-				 conceptopago cp ON ccm.conceptopago = cp.conceptopago_id";
+		$select = "CONCAT(ccm.numero_cuota, '/', ccm.total_cuotas) AS CUOTAS, CASE ccm.estado WHEN 0 THEN CONCAT('Venc. ', ccm.fecha) ELSE CONCAT('Pago ', ccm.fecha) END AS FECHA, ccm.anio AS PERIODO, mtp.denominacion AS TIPOPAGO, ccm.valor_abonado AS VALOR, ccm.cuentacorrientematriculado_id AS CCMID, ccm.tomo AS TOMO, ccm.matriculado_id AS MATRICULADOID, ccm.matricula_id AS MATRICULAID, cp.denominacion AS CONCEPTO, ccm.habilitacion AS HABILITACION, CASE ccm.estado WHEN 1 THEN 'none' ELSE 'inline-block' END AS BTNABONAR, CASE ccm.estado WHEN 1 THEN 'inline-block' ELSE 'none' END AS BTNANULAR, CASE ccm.estado WHEN 1 THEN 'none' ELSE 'inline-block' END AS BTNBORRAR";
+		$from = "cuentacorrientematriculado ccm INNER JOIN movimientotipopago mtp ON ccm.movimientotipopago_id = mtp.movimientotipopago_id INNER JOIN conceptopago cp ON ccm.conceptopago = cp.conceptopago_id";
 		$where = "ccm.matricula_id = {$matricula_id} AND ccm.matriculado_id = {$matriculado_id} AND ccm.conceptopago IN (1,2,3) ORDER BY ccm.anio DESC";
 		$cuentacorrientematriculado_collection = CollectorCondition()->get('Resolucion', $where, 4, $from, $select);
 
@@ -559,6 +538,10 @@ class MatriculadoController {
 			$mtpm->estado = 1;
 			$mtpm->save();
 
+			$cuit = filter_input(INPUT_POST, 'cuit');
+			$cuit = (is_null($cuit) OR empty($cuit)) ? 0 : $cuit;
+			if ($cuit != 0) $this->model->documento = $cuit;
+
 			$cpm = new ComprobantePago();
 			$cpm->punto_venta = $punto_venta;
 			$cpm->numero_factura = $resultadoAFIP['NUMFACTURA'];
@@ -566,6 +549,7 @@ class MatriculadoController {
 			$cpm->cae_vencimiento = $resultadoAFIP['CAEFchVto'];
 			$cpm->fecha = date('Y-m-d');
 			$cpm->hora = date('H:i:s');
+			$cpm->cuit = $cuit;
 			$cpm->subtotal = $valor_abonado;
 			$cpm->importe_total = $valor_abonado;
 			$cpm->emitido = 1;
@@ -677,6 +661,10 @@ class MatriculadoController {
 			$ccmm->save();
 			$cuentacorrientematriculado_id = $ccmm->cuentacorrientematriculado_id;
 
+			$cuit = filter_input(INPUT_POST, 'cuit');
+			$cuit = (is_null($cuit) OR empty($cuit)) ? 0 : $cuit;
+			if ($cuit != 0) $this->model->documento = $cuit;
+
 			$cpm = new ComprobantePago();
 			$cpm->punto_venta = $punto_venta;
 			$cpm->numero_factura = $resultadoAFIP['NUMFACTURA'];
@@ -684,6 +672,7 @@ class MatriculadoController {
 			$cpm->cae_vencimiento = $resultadoAFIP['CAEFchVto'];
 			$cpm->fecha = date('Y-m-d');
 			$cpm->hora = date('H:i:s');
+			$cpm->cuit = $cuit;
 			$cpm->subtotal = $valor_abonado;
 			$cpm->importe_total = $valor_abonado;
 			$cpm->emitido = 1;

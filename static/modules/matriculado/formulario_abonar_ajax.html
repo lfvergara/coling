@@ -11,13 +11,26 @@
         <div class=" form" id="div_ingresar_pago">
             <form class="form" method="post" action="{url_app}/matriculado/ingresar_pago">
                 <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="form-group col-lg-4 col-md-4 col-sm-12 col-xs-12">
                         <label>Tipo Pago</label>
                         <select class="form-control m-bot15" name="tipopago" id="tipopago" onChange="controlaTipoPago();" required>
                             <option value="1">Transferencia</option>
                             <option value="2">Depósito</option>
                             <option value="3">Tarjeta de Débito</option>
                             <option value="4">Tarjeta de Crédito</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                        <label>Resolución</label>
+                        <select class="form-control m-bot15" name="resolucion" id="resolucion" onChange="calculaValorResolucion();" required>
+                            <option value="0" selected>Seleccionar</option>
+                            {slt_resolucion}
+                        </select>
+                    </div>
+                    <div class="form-group col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                        <label>Concepto de Pago</label>
+                        <select class="form-control m-bot15" name="conceptopago" id="conceptopago" required>
+                            {slt_conceptopago}
                         </select>
                     </div>
                 </div>
@@ -36,20 +49,11 @@
                     </div>
                 </div>
                 <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
-                        <label>Resolución</label>
-                        <select class="form-control m-bot15" name="resolucion" id="resolucion" onChange="calculaValorResolucion();" required>
-                            <option value="0" selected>Seleccionar</option>
-                            {slt_resolucion}
-                        </select>
+                    <div class="form-group col-lg-4 col-lg-offset-4 col-md-12 col-sm-12 col-xs-12">
+                        <label>CUIT/CUIL</label>
+                        <input type="number" class="form-control" id="cuit" name="cuit" value="0" required>
                     </div>
                     <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
-                        <label>Concepto de Pago</label>
-                        <select class="form-control m-bot15" name="conceptopago" id="conceptopago" required>
-                            {slt_conceptopago}
-                        </select>
-                    </div>
-                    <div class="form-group col-lg-4  col-md-12 col-sm-12 col-xs-12">
                         <label>Importe</label>
                         <input type="text" class="form-control" name="valor_abonado" id="valor_abonado" value="{cuentacorrientematriculado-valor_abonado}" required>
                     </div>

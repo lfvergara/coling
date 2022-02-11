@@ -552,6 +552,7 @@ class MatriculadoController {
 			$cpm->cuit = $cuit;
 			$cpm->subtotal = $valor_abonado;
 			$cpm->importe_total = $valor_abonado;
+			$cpm->detalle = filter_input(INPUT_POST, 'detalle');
 			$cpm->emitido = 1;
 			$cpm->cuentacorrientematriculado_id = $cuentacorrientematriculado_id;
 			$cpm->tipofactura = $tipofactura_id;
@@ -675,6 +676,7 @@ class MatriculadoController {
 			$cpm->cuit = $cuit;
 			$cpm->subtotal = $valor_abonado;
 			$cpm->importe_total = $valor_abonado;
+			$cpm->detalle = filter_input(INPUT_POST, 'detalle');
 			$cpm->emitido = 1;
 			$cpm->cuentacorrientematriculado_id = $cuentacorrientematriculado_id;
 			$cpm->tipofactura = $tipofactura_id;

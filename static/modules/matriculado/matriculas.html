@@ -38,13 +38,13 @@
         <!--
         <button type="button" class="btn btn-danger btn-sm" style=" width: 100%; display:{btn_deuda_display}" id="btn_deuda" onClick="verDeuda();">Ver Deuda</button>
         -->
-        <button type="button" class="btn btn-dark btn-sm" style=" width: 100%; display:{btn_agregar_matricula_display}" id="btn_agregar_matricula" onClick="agregarMatricula();">Agregar Matrícula</button>
-    </div>
-    <div class="col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4 col-sm-12 col-xs-12">
-        <button type="button" class="btn btn-dark btn-sm" style=" width: 100%; display:{btn_movimientos_display}" id="btn_movimientos" onClick="verMovimientos();">Ver Movimientos</button>
+        <button type="button" class="btn btn-dark btn-sm" style=" width: 100%;" id="btn_agregar_matricula" onClick="agregarMatricula();">Agregar Matrícula</button>
     </div>
     <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-        <button type="button" class="btn btn-danger btn-sm" style="display: {btn_abonar_otros_display}; width: 100%;" id="btn_abonar_otros" onClick="abonarOtros();"><i class="fa fa-usd"></i> Caja</button>
+        <button type="button" class="btn btn-dark btn-sm" style=" width: 100%;" id="btn_movimientos" onClick="verMovimientos();">Ver Movimientos</button>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+        <button type="button" class="btn btn-danger btn-sm" style="width: 100%;" id="btn_abonar_otros" onClick="abonarOtros();"><i class="fa fa-usd"></i> Caja</button>
     </div>
     <div class="x_panel" id="div_agregar_matricula" style="display: {div_agregar_matricula_display};">
         <div class="x_title">
@@ -539,8 +539,8 @@
 
     function agregarMatricula() {
         //document.getElementById('btn_agregar_matricula').style.display = 'none';
-        document.getElementById('btn_abonar_otros').style.display = 'inline-block';
-        document.getElementById('btn_movimientos').style.display = 'inline-block';
+        //document.getElementById('btn_abonar_otros').style.display = 'inline-block';
+        //document.getElementById('btn_movimientos').style.display = 'inline-block';
         //document.getElementById('btn_deuda').style.display = 'inline-block';
         document.getElementById('div_agregar_matricula').style.display = 'inline-block';
         document.getElementById('div_abonar_otros').style.display = 'none';
@@ -550,8 +550,8 @@
 
     function abonarOtros() {
         //document.getElementById('btn_agregar_matricula').style.display = 'inline-block';
-        document.getElementById('btn_abonar_otros').style.display = 'none';
-        document.getElementById('btn_movimientos').style.display = 'inline-block';
+        //document.getElementById('btn_abonar_otros').style.display = 'none';
+        //document.getElementById('btn_movimientos').style.display = 'inline-block';
         //document.getElementById('btn_deuda').style.display = 'inline-block';
         document.getElementById('div_agregar_matricula').style.display = 'none';
         document.getElementById('div_abonar_otros').style.display = 'inline-block';
@@ -561,8 +561,8 @@
 
     function verMovimientos() {
         //document.getElementById('btn_agregar_matricula').style.display = 'none';
-        document.getElementById('btn_abonar_otros').style.display = 'inline-block';
-        document.getElementById('btn_movimientos').style.display = 'inline-block';
+        //document.getElementById('btn_abonar_otros').style.display = 'inline-block';
+        //document.getElementById('btn_movimientos').style.display = 'inline-block';
         //document.getElementById('btn_deuda').style.display = 'inline-block';
         document.getElementById('div_agregar_matricula').style.display = 'none';
         document.getElementById('div_abonar_otros').style.display = 'none';

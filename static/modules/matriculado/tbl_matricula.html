@@ -10,7 +10,9 @@
     <td>{matricula-fecha_inscripcion}</td>
     <td>
         <center>
+            <!--
             <a href="{url_app}/matriculado/gestionar_matricula/{matriculado-matriculado_id}@{matricula-matricula_id}" class="btn btn-primary btn-xs" title="Gestionar matricula"><i class="fa fa-cog"></i></a>
+            -->
             <button class="btn btn-warning btn-xs" onclick="editarMatricula({matriculado-matriculado_id},{matricula-matricula_id});" title="Editar matricula"><i class="fa fa-edit"></i></button>
             <a class="btn btn-{matricula-btn_class_estado} btn-xs" onClick="formularioCambiaEstado({matricula-matricula_id},{matricula-btn_arg_estado});" href="#" title="Cambiar estado de matrícula"><i class="fa fa-{matricula-btn_icon_estado}"></i></a>
         </center>

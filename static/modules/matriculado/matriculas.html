@@ -457,33 +457,33 @@
         var flag_array = 0;
         var matricula_original = document.getElementById("matricula_original").value;
 
-        var matricula = document.getElementById("matricula").value;
+        var matricula = document.getElementById("ed_matricula").value;
         if (matricula == null || matricula.length == 0 || matricula == "") {
             flag_array = 1;
             array.push("<strong>[ERROR]</strong> Por favor complete la MATRÍCULA.");
         }
 
-        var titulo = document.getElementById("titulo");
+        var titulo = document.getElementById("ed_titulo");
         var titulo_id = titulo.options[titulo.selectedIndex].value;
         if (titulo_id == null || titulo_id.length == 0 || titulo_id == "" || titulo_id == 0) {
             flag_array = 1;
             array.push("<strong>[ERROR]</strong> Por favor seleccione el TÍTULO.");
         }
 
-        var universidad = document.getElementById("universidad");
+        var universidad = document.getElementById("ed_universidad");
         var universidad_id = universidad.options[universidad.selectedIndex].value;
         if (universidad_id == null || universidad_id.length == 0 || universidad_id == "" || universidad_id == 0) {
             flag_array = 1;
             array.push("<strong>[ERROR]</strong> Por favor seleccione la UNIVERSIDAD.");
         }
 
-        var fecha_egreso = document.getElementById("fecha_egreso").value;
+        var fecha_egreso = document.getElementById("ed_fecha_egreso").value;
         if (fecha_egreso == null || fecha_egreso.length == 0 || fecha_egreso == "") {
             flag_array = 1;
             array.push("<strong>[ERROR]</strong> Por favor complete la FECHA DE EGRESO.");
         }
         
-        var fecha_inscripcion = document.getElementById("fecha_inscripcion").value;
+        var fecha_inscripcion = document.getElementById("ed_fecha_inscripcion").value;
         if (fecha_inscripcion == null || fecha_inscripcion.length == 0 || fecha_inscripcion == "") {
             flag_array = 1;
             array.push("<strong>[ERROR]</strong> Por favor complete la FECHA DE INSCRIPCIÓN.");

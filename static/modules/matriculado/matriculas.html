@@ -489,18 +489,6 @@
             array.push("<strong>[ERROR]</strong> Por favor complete la FECHA DE INSCRIPCIÓN.");
         }
 
-        var tomo = document.getElementById("tomo").value;
-        if (tomo == null || tomo.length == 0 || tomo == "") {
-            flag_array = 1;
-            array.push("<strong>[ERROR]</strong> Por favor complete el TOMO.");
-        }
-
-        var habilitacion = document.getElementById("habilitacion").value;
-        if (habilitacion == null || habilitacion.length == 0 || habilitacion == "") {
-            flag_array = 1;
-            array.push("<strong>[ERROR]</strong> Por favor complete la HABILITACIÓN.");
-        }
-
         if (flag_array == 0) {
             if (matricula != matricula_original) {
                 var flag = $.ajax({

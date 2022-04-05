@@ -52,7 +52,7 @@ class MatriculadoController {
 		$this->view->editar($provincia_collection, $documentotipo_collection, $this->model);
 	}
 
-	function new_matriculas($arg) {
+	function matriculas($arg) {
 		SessionHandler()->check_session();	
 		$matriculado_id = $arg;
 		$this->model->matriculado_id = $arg;
@@ -247,7 +247,7 @@ class MatriculadoController {
 								$movimientosmatriculado_collection, $deudamatriculado_collection, $this->model, $gui_array);
 	}
 
-	function matriculas($arg) {
+	function bk_matriculas($arg) {
 		SessionHandler()->check_session();	
 		$matriculado_id = $arg;
 		$this->model->matriculado_id = $arg;

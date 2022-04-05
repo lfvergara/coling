@@ -10,11 +10,11 @@
     <div class="x_content">
         <div class=" form">
             <form class="form" id="formulario_editar" method="post" action="{url_app}/matriculado/actualizar_matricula">
-                <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
                     <label>Matrícula</label>
                     <input type="text" class="form-control" name="matricula" id="matricula" value="{matricula-matricula}" required>
                 </div>
-                <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
                     <label>Egreso</label>    
                     <input type="date" name="fecha_egreso" id="fecha_egreso" class="form-control" value="{matricula-fecha_egreso}" required>
                 </div>
@@ -22,14 +22,14 @@
                     <label>Inscripción</label>    
                     <input type="date" name="fecha_inscripcion" id="fecha_inscripcion" class="form-control" value="{matricula-fecha_inscripcion}" required>
                 </div>
-                <div class="form-group col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
                     <label>Universidad</label>
                     <select class="form-control m-bot15" name="universidad" id="universidad" required>
                         <option value="{universidad-universidad_id}" selected>{universidad-denominacion}</option>
                         {slt_universidad}
                     </select>
                 </div>
-                <div class="form-group col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                <div class="form-group col-lg-6 col-md-12 col-sm-12 col-xs-12">
                     <label>Título</label>
                     <select class="form-control m-bot15" name="titulo" id="titulo" required>
                         <option value="{titulo-titulo_id}" selected>{titulo-denominacion}</option>

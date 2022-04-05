@@ -14,16 +14,13 @@
                     <label>Matrícula</label>
                     <input type="text" class="form-control" name="matricula" id="matricula" value="{matricula-matricula}" required>
                 </div>
-                <div class="form-group col-lg-9 col-md-12 col-sm-12 col-xs-12">
-                    <label>Título</label>
-                    <select class="form-control m-bot15" name="titulo" id="titulo" required>
-                        <option value="{titulo-titulo_id}" selected>{titulo-denominacion}</option>
-                        {slt_titulo}
-                    </select>
-                </div>
                 <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
                     <label>Egreso</label>    
                     <input type="date" name="fecha_egreso" id="fecha_egreso" class="form-control" value="{matricula-fecha_egreso}" required>
+                </div>
+                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                    <label>Inscripción</label>    
+                    <input type="date" name="fecha_inscripcion" id="fecha_inscripcion" class="form-control" value="{matricula-fecha_inscripcion}" required>
                 </div>
                 <div class="form-group col-lg-9 col-md-12 col-sm-12 col-xs-12">
                     <label>Universidad</label>
@@ -32,24 +29,20 @@
                         {slt_universidad}
                     </select>
                 </div>
-                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
-                    <label>Inscripción</label>    
-                    <input type="date" name="fecha_inscripcion" id="fecha_inscripcion" class="form-control" value="{matricula-fecha_inscripcion}" required>
+                <div class="form-group col-lg-9 col-md-12 col-sm-12 col-xs-12">
+                    <label>Título</label>
+                    <select class="form-control m-bot15" name="titulo" id="titulo" required>
+                        <option value="{titulo-titulo_id}" selected>{titulo-denominacion}</option>
+                        {slt_titulo}
+                    </select>
                 </div>
-                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
-                    <label>Habilitación</label>    
-                </div>
-                <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
-                    <label>Tomo</label>    
-                    <input type="text" name="tomo" id="tomo" class="form-control" value="{matricula-tomo}" required>
-                </div>                    
                 <div class="form-group col-lg-12" style="margin-top: 2%;" align="right">
                     <input type="hidden" name="matriculado_id" value="{matriculado-matriculado_id}">
                     <input type="hidden" name="matricula_id" value="{matricula-matricula_id}">
                     <input type="hidden" name="matricula_original" id="matricula_original" value="{matricula-matricula}">
                     <input type="hidden" name="habilitacion" id="habilitacion" value="0">
                     <input type="hidden" name="tomo" id="tomo" value="0">
-                    <a href="#" class="btn btn-app btn-danger" onclick="agregarMatricula({matriculado-matriculado_id})" style="background: #ac2925; color: #FFF;"><i class="fa fa-arrow-circle-left"></i> Volver</a>
+                    <a href="#" class="btn btn-app btn-danger" onclick="abonarOtros();" style="background: #ac2925; color: #FFF;"><i class="fa fa-arrow-circle-left"></i> Volver</a>
                     <a href="#" class="btn btn-app" onclick="verificarEditarMatricula()"><i class="fa fa-edit"></i> Editar</a>
                 </div>
             </form>

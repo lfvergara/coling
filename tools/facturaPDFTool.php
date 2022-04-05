@@ -1,5 +1,6 @@
 <?php
-require_once 'common/libs/domPDF/dompdf_config.inc.php';
+use Dompdf\Dompdf;
+require_once 'common/libs/ndompdf/autoload.inc.php';
 
 
 class FacturaPDF extends View {
@@ -10,6 +11,19 @@ class FacturaPDF extends View {
         
         $gui_html = file_get_contents("static/common/plantilla_comprobante_pago.html");
         unset($obj_matriculado->infocontacto_collection, $obj_matriculado->matricula_collection);
+
+        $array_qr = array('fecha_venta'=>$obj_comprobantepago->fecha,
+                          'cuit'=>$obj_configuracion->cuit, 
+                          'pto_venta'=>$obj_comprobantepago->punto_venta, 
+                          'tipofactura'=>$obj_comprobantepago->tipofactura->afip_id, 
+                          'numero_factura'=>$obj_comprobantepago->numero_factura, 
+                          'total'=>$obj_comprobantepago->subtotal, 
+                          'cliente_tipo_doc'=>$obj_matriculado->documentotipo->afip_id, 
+                          'cliente_nro_doc'=>$obj_matriculado->documento, 
+                          'cae'=>$obj_comprobantepago->cae);
+
+        $cod_qr = $this->qrAFIP($array_qr);
+        $obj_comprobantepago->cod_qr = $cod_qr;
 
         $obj_comprobantepago->punto_venta = str_pad($obj_comprobantepago->punto_venta, 4, '0', STR_PAD_LEFT);
         $obj_comprobantepago->numero_factura = str_pad($obj_comprobantepago->numero_factura, 8, '0', STR_PAD_LEFT);
@@ -50,6 +64,41 @@ class FacturaPDF extends View {
         $fp = fopen($output1, "a"); 
         fwrite($fp, $pdfoutput); 
         fclose($fp);
+    }
+
+    function qrAFIP($array_qr) {
+        require_once 'vendor/autoload.php';
+        $datos_cmp_base_64 = json_encode([
+            "ver" => 1,
+            "fecha" => substr($array_qr['fecha_venta'], 0, 10),
+            "cuit" => (int) $array_qr['cuit'],
+            "ptoVta" => (int) $array_qr['pto_venta'],
+            "tipoCmp" => (int) $array_qr['tipofactura'],
+            "nroCmp" => (int) $array_qr['numero_factura'],
+            "importe" => (float) $array_qr['total'],
+            "moneda" => "PES",
+            "ctz" => (float) 1,
+            "tipoDocRec" => (int) $array_qr['cliente_tipo_doc'],
+            "nroDocRec" => (int) $array_qr['cliente_nro_doc'],
+            "tipoCodAut" => "E",
+            "codAut" => (int) $array_qr['cae']
+        ]);
+        
+        $datos_cmp_base_64 = base64_encode($datos_cmp_base_64);
+        $url = 'https://www.afip.gob.ar/fe/qr/';
+        $to_qr = $url.'?p='.$datos_cmp_base_64;
+
+        $barcode = new \Com\Tecnick\Barcode\Barcode();
+        $bobj = $barcode->getBarcodeObj(
+                'QRCODE,H',
+                $to_qr,
+                -4,
+                -4,
+                'black',
+                array(-2, -2, -2, -2)
+            )->setBackgroundColor('white');
+        $qr_div = base64_encode($bobj->getPngData());
+        return $qr_div;
     }
 }
 ?>

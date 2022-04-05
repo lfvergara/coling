@@ -17,6 +17,7 @@ class ComprobantePago extends StandardObject {
 		$this->importe_total = 0.00;
 		$this->detalle = '';
 		$this->emitido = 0;
+		$this->anulado = 0;
 		$this->cuentacorrientematriculado_id = 0;
 		$this->tipofactura = $tipofactura;
 	}

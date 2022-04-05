@@ -23,6 +23,7 @@ class MatriculadoController {
 	}
 
 	function panel() {
+    	SessionHandler()->check_session();	
 		$select = "m.matriculado_id AS ID, m.barrio AS BARRIO, pr.denominacion AS PROVINCIA, m.codigopostal AS CODPOSTAL, CONCAT(m.apellido, ' ', m.nombre) AS MATRICULADO, CONCAT(dt.denominacion, ' ', m.documento) AS DOCUMENTO, CONCAT(m.barrio, ' - ', m.domicilio) AS DOMICILIO, (SELECT im.valor FROM infocontacto im INNER JOIN infocontactomatriculado icm ON im.infocontacto_id = icm.compositor WHERE icm.compuesto = m.matriculado_id AND denominacion = 'Celular') AS CELULAR, (SELECT ic.valor FROM infocontacto ic INNER JOIN infocontactomatriculado icm ON ic.infocontacto_id = icm.compositor WHERE icm.compuesto = m.matriculado_id AND denominacion = 'Email') AS EMAIL, IF(ma.matricula IS NULL, '-', ma.matricula) AS NUMMATRICULA";
 		$from = "matriculado m INNER JOIN provincia pr ON m.provincia = pr.provincia_id INNER JOIN documentotipo dt ON m.documentotipo = dt.documentotipo_id LEFT JOIN matriculamatriculado mm ON m.matriculado_id = mm.compuesto LEFT JOIN matricula ma ON mm.compositor = ma.matricula_id";
 		$matriculado_collection = CollectorCondition()->get('Matriculado', NULL, 4, $from, $select);
@@ -585,6 +586,7 @@ class MatriculadoController {
 	}
 
 	function verifica_documento_ajax($arg) {
+		SessionHandler()->check_session();
 		$select = "COUNT(*) AS DUPLICADO";
 		$from = "matriculado m";
 		$where = "m.documento = {$arg}";
@@ -593,6 +595,7 @@ class MatriculadoController {
 	}
 
 	function verifica_matricula_ajax($arg) {
+		SessionHandler()->check_session();
 		$select = "COUNT(*) AS DUPLICADO";
 		$from = "matricula m";
 		$where = "m.matricula = '{$arg}'";
@@ -601,6 +604,7 @@ class MatriculadoController {
 	}
 
 	function editar_matricula_ajax($arg) {
+		SessionHandler()->check_session();
 		$ids = explode('@', $arg);
 		$matriculado_id = $ids[0];
 		$matricula_id = $ids[1];
@@ -615,6 +619,7 @@ class MatriculadoController {
 	}
 
 	function agregar_matricula_ajax($arg) {
+		SessionHandler()->check_session();
 		$matriculado_id = $arg;
 		$universidad_collection = Collector()->get('Universidad');
 		$titulo_collection = Collector()->get('Titulo');
@@ -622,6 +627,7 @@ class MatriculadoController {
 	}
 
 	function gestionar_matricula($arg) {
+		SessionHandler()->check_session();
 		$ids = explode('@', $arg);
 		$matriculado_id = $ids[0];
 		$matricula_id = $ids[1];
@@ -642,6 +648,7 @@ class MatriculadoController {
 	}
 
 	function traer_valor_resolucion_ajax($arg) {
+		SessionHandler()->check_session();
 		$resolucion_id = $arg;
 		$rm = new Resolucion();
 		$rm->resolucion_id = $resolucion_id;
@@ -665,6 +672,7 @@ class MatriculadoController {
 	}
 
 	function ingresar_pago() {
+		SessionHandler()->check_session();
 		require_once "tools/facturaAFIPTool.php";
 		require_once "tools/facturaPDFTool.php";
 		require_once "tools/email.php";
@@ -748,6 +756,7 @@ class MatriculadoController {
 			$cpm->importe_total = $valor_abonado;
 			$cpm->detalle = filter_input(INPUT_POST, 'detalle');
 			$cpm->emitido = 1;
+			$cpm->anulado = 0;
 			$cpm->cuentacorrientematriculado_id = $cuentacorrientematriculado_id;
 			$cpm->tipofactura = $tipofactura_id;
 			$cpm->save();
@@ -785,6 +794,7 @@ class MatriculadoController {
 	}
 
 	function ingresar_pago_otros() {
+		SessionHandler()->check_session();
 		require_once "tools/facturaAFIPTool.php";
 		require_once "tools/facturaPDFTool.php";
 		require_once "tools/email.php";
@@ -873,6 +883,7 @@ class MatriculadoController {
 			$cpm->importe_total = $valor_abonado;
 			$cpm->detalle = filter_input(INPUT_POST, 'detalle');
 			$cpm->emitido = 1;
+			$cpm->anulado = 0;
 			$cpm->cuentacorrientematriculado_id = $cuentacorrientematriculado_id;
 			$cpm->tipofactura = $tipofactura_id;
 			$cpm->save();
@@ -910,6 +921,7 @@ class MatriculadoController {
 	}
 
 	function guardar_habilitacion() {
+		SessionHandler()->check_session();
 		$matriculado_id = filter_input(INPUT_POST, 'matriculado_id');
 		$matricula_id = filter_input(INPUT_POST, 'matricula_id');
 		$total_cuotas = filter_input(INPUT_POST, 'total_cuotas');
@@ -984,6 +996,7 @@ class MatriculadoController {
 	}
 
 	function cambiar_estado_matricula() {
+		SessionHandler()->check_session();
 		$matriculado_id = filter_input(INPUT_POST, 'matriculado_id');
 		$matricula_id = filter_input(INPUT_POST, 'matricula_id');
 		$estado = filter_input(INPUT_POST, 'estado_id');
@@ -1019,6 +1032,7 @@ class MatriculadoController {
 	}
 
 	function eliminar_pago_matricula($arg) {
+		SessionHandler()->check_session();
 		$ids = explode("@", $arg);
 		$matriculado_id = $ids[0];
 		$matricula_id = $ids[1];
@@ -1038,6 +1052,7 @@ class MatriculadoController {
 	}
 
 	function anular_pago_matricula($arg) {
+		SessionHandler()->check_session();
 		$ids = explode("@", $arg);
 		$matriculado_id = $ids[0];
 		$matricula_id = $ids[1];
@@ -1067,6 +1082,7 @@ class MatriculadoController {
 	}
 
 	function traer_form_abonar_ajax($arg) {
+		SessionHandler()->check_session();
 		$ids = explode("@", $arg);
 		$matriculado_id = $ids[0];
 		$matricula_id = $ids[1];
@@ -1094,6 +1110,7 @@ class MatriculadoController {
 	}
 
 	function verifica_habilitacion_ajax($arg) {
+		SessionHandler()->check_session();
 		$ids = explode("@", $arg);
 		$matriculado_id = $ids[0];
 		$matricula_id = $ids[1];
@@ -1114,6 +1131,7 @@ class MatriculadoController {
 	}
 
 	function traer_inhabilitacion_admin_ajax($arg) {
+		SessionHandler()->check_session();
 		$matricula_id = $arg;
 
 		$mm = new Matricula();
@@ -1129,6 +1147,7 @@ class MatriculadoController {
 	}
 
 	function traer_tipos_facturas() {
+		SessionHandler()->check_session();
 		require_once "common/libs/afip.php-master/src/Afip.php";
 		$cm = new Configuracion();
 		$cm->configuracion_id = 1;

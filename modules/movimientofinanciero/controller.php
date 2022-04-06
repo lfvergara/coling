@@ -6,7 +6,6 @@ require_once "modules/cuentacorrientematriculado/model.php";
 require_once "modules/comprobantepago/model.php";
 require_once "modules/notacredito/model.php";
 require_once "modules/configuracion/model.php";
-require_once "tools/facturaAFIPTool.php";
 require_once "core/helpers/file.php";
 
 
@@ -216,6 +215,8 @@ class MovimientoFinancieroController {
 
 	function generar_notacredito($arg) {
 		SessionHandler()->check_session();
+		require_once "tools/facturaAFIPTool.php";
+		require_once "tools/facturaPDFTool.php";
 
 		$cm = new Configuracion();
         $cm->configuracion_id = 1;
@@ -233,6 +234,7 @@ class MovimientoFinancieroController {
 		$ccm->cuentacorrientematriculado_id = $cuentacorrientematriculado_id;
 		$ccm->get();
 		$matriculado_id = $ccm->matriculado_id;
+		$conceptopago = $ccm->conceptopago->denominacion;
 
 		$mm = new Matriculado();
 		$mm->matriculado_id = $matriculado_id;
@@ -250,7 +252,7 @@ class MovimientoFinancieroController {
 		$ncm->numero_cae = 0;
 		$ncm->vencimiento_cae = NULL;
 		$ncm->comprobantepago_id = $comprobantepago_id;
-		$ncm->tipofactura = '';
+		$ncm->tipofactura = 9;
 		$ncm->save();
 		$notacredito_id = $ncm->notacredito_id;
 
@@ -269,11 +271,19 @@ class MovimientoFinancieroController {
 			$ncm->vencimiento_cae = $resultadoAFIP['CAEFchVto'];
 			$ncm->save();
 
+			$ncm = new NotaCredito();
+			$ncm->notacredito_id = $notacredito_id;
+			$ncm->get();
+			$ncm->concepto = $conceptopago;
+
 			$cpm = new ComprobantePago();
 			$cpm->comprobantepago_id = $comprobantepago_id;
 			$cpm->get();
 			$cpm->anulado = 1;
 			$cpm->save();
+
+			$facturaPDFHelper = new FacturaPDF();
+			$facturaPDFHelper->comprobante_nc($mm, $ncm, $cm);
 		}
 
 		header("Location: " . URL_APP . "/notacredito/consultar/{$notacredito_id}");

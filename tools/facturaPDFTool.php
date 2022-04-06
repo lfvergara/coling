@@ -66,6 +66,61 @@ class FacturaPDF extends View {
         fclose($fp);
     }
 
+    public function comprobante_nc($obj_matriculado, $obj_notacredito, $obj_configuracion) {        
+        
+        $gui_html = file_get_contents("static/common/plantilla_comprobante_nc.html");
+        unset($obj_matriculado->infocontacto_collection, $obj_matriculado->matricula_collection);
+
+        $array_qr = array('fecha_venta'=>$notacredito->fecha,
+                          'cuit'=>$obj_configuracion->cuit, 
+                          'pto_venta'=>$notacredito->punto_venta, 
+                          'tipofactura'=>$notacredito->tipofactura->afip_id, 
+                          'numero_factura'=>$notacredito->numero_factura, 
+                          'total'=>$notacredito->total, 
+                          'cliente_tipo_doc'=>$obj_matriculado->documentotipo->afip_id, 
+                          'cliente_nro_doc'=>$obj_matriculado->documento, 
+                          'cae'=>$notacredito->cae);
+
+        $cod_qr = $this->qrAFIP($array_qr);
+        $notacredito->cod_qr = $cod_qr;
+
+        $notacredito->punto_venta = str_pad($notacredito->punto_venta, 4, '0', STR_PAD_LEFT);
+        $notacredito->numero_factura = str_pad($notacredito->numero_factura, 8, '0', STR_PAD_LEFT);
+        $comprobantepago_id = $notacredito->comprobantepago_id;
+        
+        $obj_matriculado = $this->set_dict($obj_matriculado);
+        $notacredito = $this->set_dict($notacredito);
+        $obj_configuracion = $this->set_dict($obj_configuracion);
+
+        $gui_html = $this->render($obj_matriculado, $gui_html);
+        $gui_html = $this->render($notacredito, $gui_html);
+        $gui_html = $this->render($obj_configuracion, $gui_html);
+        
+        $nombre_PDF = "NotaCredito-{$comprobantepago_id}";
+        $nombre_PDF1 = "NotaCredito-{$comprobantepago_id}.pdf";
+        $directorio = URL_PRIVATE . "notacredito/";
+        if(!file_exists($directorio)) {
+            mkdir($directorio);
+            chmod($directorio, 0777);
+        }
+
+        $output = $directorio . $nombre_PDF;
+        $output1 = $directorio . $nombre_PDF1;
+        $mipdf = new DOMPDF();
+        $mipdf->set_paper("A4", "portrait");
+        $mipdf->load_html($gui_html);
+        $mipdf->render(); 
+        $pdfoutput = $mipdf->output(); 
+        $filename = $output; 
+        $fp = fopen($output, "a"); 
+        fwrite($fp, $pdfoutput); 
+        fclose($fp);
+
+        $fp = fopen($output1, "a"); 
+        fwrite($fp, $pdfoutput); 
+        fclose($fp);
+    }
+
     function qrAFIP($array_qr) {
         require_once 'vendor/autoload.php';
         $datos_cmp_base_64 = json_encode([

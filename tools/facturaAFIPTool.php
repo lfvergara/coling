@@ -175,7 +175,7 @@ class FacturaAFIPTool {
         return $data;
     }
 
-    public function notaCreditoAFIP($obj_configuracion, $obj_notacredito, $obj_matriculado) { 
+    public function notaCreditoAFIP($obj_configuracion, $obj_notacredito, $obj_matriculado, $numero_recibo) { 
         $CUIT = $obj_configuracion->cuit;
         $PTO_VENTA = $obj_configuracion->punto_venta;
         
@@ -192,7 +192,7 @@ class FacturaAFIPTool {
         
         $array_discriminado = $this->prepara_array_discriminado_nc($importe);
         $array_final = array_merge($nueva_factura, $array_discriminado);
-        $data = $this->generaArrayData($array_final);
+        $data = $this->generaArrayDataNC($array_final, $numero_recibo);
         
         $res = $afip->ElectronicBilling->CreateVoucher($data);
         $res['NUMFACTURA'] = $nueva_factura['nueva_factura'];
@@ -303,11 +303,11 @@ class FacturaAFIPTool {
         return $array_final;
     }
 
-    function generaArrayDataNC($array_final, $obj_matriculado_referencia) { 
+    function generaArrayDataNC($array_final, $numero_recibo) { 
         $cuit_emisor = $array_final['cuit_emisor'];
         $punto_venta = $array_final['punto_venta'];
         $numero_factura = $array_final['nueva_factura'];
-        $tipofactura = $array_final['tipofactura_afip_id'];
+        $tipofactura = 13;
         $fecha_factura = date('Ymd');
         $importe_total = $array_final['importe_total'];
         $documentotipo_matriculado = $array_final['documentotipo_matriculado'];
@@ -318,10 +318,6 @@ class FacturaAFIPTool {
         $importe_iva = $array_final['importe_iva'];
         $array_alicuotas = $array_final['array_alicuotas'];
         
-        $tipofactura_egreso = $obj_matriculado_referencia->tipofactura->afip_id;
-        $puntoventa_egreso = $obj_matriculado_referencia->punto_venta;
-        $numerofactura_egreso = $obj_matriculado_referencia->numero_factura;
-
         $data = array(
             'CantReg'   => 1,  // Cantidad de comprobantes a registrar
             'PtoVta'    => $punto_venta,  // Punto de venta
@@ -340,12 +336,11 @@ class FacturaAFIPTool {
             'ImpTrib'   => 0,   //Importe total de tributos
             'MonId'     => 'PES', //Tipo de moneda usada en el comprobante (ver tipos disponibles)('PES' para pesos argentinos) 
             'MonCotiz'  => 1,     // Cotización de la moneda usada (1 para pesos argentinos) 
-            'Iva'       => $array_alicuotas, 
             'CbtesAsoc' => array( // (Opcional) Comprobantes asociados
                                 array(
-                                    'Tipo'      => $tipofactura_egreso, // Tipo de comprobante (ver tipos disponibles) 
-                                    'PtoVta'    => $puntoventa_egreso, // Punto de venta
-                                    'Nro'       => $numerofactura_egreso, // Numero de comprobante
+                                    'Tipo'      => 15, // Tipo de comprobante (ver tipos disponibles) 
+                                    'PtoVta'    => $punto_venta, // Punto de venta
+                                    'Nro'       => $numero_recibo, // Numero de comprobante
                                     'Cuit'      => $cuit_emisor // (Opcional) Cuit del emisor del comprobante
                                 )
             )

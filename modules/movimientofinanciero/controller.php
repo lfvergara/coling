@@ -279,16 +279,16 @@ class MovimientoFinancieroController {
 		header("Location: " . URL_APP . "/notacredito/consultar/{$notacredito_id}");
 	}
 
-	function traer_tipos_alicuotas() {
-		$cm = new Configuracion();
-		$cm->configuracion_id = 1;
-		$cm->get();
+	function traerTiposFacturasAFIP() {
+        $cm = new Configuracion();
+        $cm->configuracion_id = 1;
+        $cm->get();
 
-		$afip = new Afip(array('CUIT' => $cm->cuit, 'production' => true));
-		$voucher_types = $afip->ElectronicBilling->GetAliquotTypes();
-		print_r($voucher_types);
-		exit;
-	}
+        $CUIT = $cm->cuit;
+        $afip = new Afip(array('CUIT' => $CUIT, 'production' => true));
+        $voucher_types = $afip->ElectronicBilling->GetVoucherTypes();
+        return $voucher_types;
+    }
 
 	function ver_archivo(){
 		SessionHandler()->check_session();

@@ -71,29 +71,29 @@ class FacturaPDF extends View {
         $gui_html = file_get_contents("static/common/plantilla_comprobante_nc.html");
         unset($obj_matriculado->infocontacto_collection, $obj_matriculado->matricula_collection);
 
-        $array_qr = array('fecha_venta'=>$notacredito->fecha,
+        $array_qr = array('fecha_venta'=>$obj_notacredito->fecha,
                           'cuit'=>$obj_configuracion->cuit, 
-                          'pto_venta'=>$notacredito->punto_venta, 
-                          'tipofactura'=>$notacredito->tipofactura->afip_id, 
-                          'numero_factura'=>$notacredito->numero_factura, 
-                          'total'=>$notacredito->total, 
+                          'pto_venta'=>$obj_notacredito->punto_venta, 
+                          'tipofactura'=>$obj_notacredito->tipofactura->afip_id, 
+                          'numero_factura'=>$obj_notacredito->numero_factura, 
+                          'total'=>$obj_notacredito->total, 
                           'cliente_tipo_doc'=>$obj_matriculado->documentotipo->afip_id, 
                           'cliente_nro_doc'=>$obj_matriculado->documento, 
-                          'cae'=>$notacredito->cae);
+                          'cae'=>$obj_notacredito->cae);
 
         $cod_qr = $this->qrAFIP($array_qr);
-        $notacredito->cod_qr = $cod_qr;
+        $obj_notacredito->cod_qr = $cod_qr;
 
-        $notacredito->punto_venta = str_pad($notacredito->punto_venta, 4, '0', STR_PAD_LEFT);
-        $notacredito->numero_factura = str_pad($notacredito->numero_factura, 8, '0', STR_PAD_LEFT);
-        $comprobantepago_id = $notacredito->comprobantepago_id;
+        $obj_notacredito->punto_venta = str_pad($obj_notacredito->punto_venta, 4, '0', STR_PAD_LEFT);
+        $obj_notacredito->numero_factura = str_pad($obj_notacredito->numero_factura, 8, '0', STR_PAD_LEFT);
+        $comprobantepago_id = $obj_notacredito->comprobantepago_id;
         
         $obj_matriculado = $this->set_dict($obj_matriculado);
-        $notacredito = $this->set_dict($notacredito);
+        $obj_notacredito = $this->set_dict($obj_notacredito);
         $obj_configuracion = $this->set_dict($obj_configuracion);
 
         $gui_html = $this->render($obj_matriculado, $gui_html);
-        $gui_html = $this->render($notacredito, $gui_html);
+        $gui_html = $this->render($obj_notacredito, $gui_html);
         $gui_html = $this->render($obj_configuracion, $gui_html);
         
         $nombre_PDF = "NotaCredito-{$comprobantepago_id}";

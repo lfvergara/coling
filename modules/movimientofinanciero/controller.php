@@ -284,7 +284,7 @@ class MovimientoFinancieroController {
 		$cm->configuracion_id = 1;
 		$cm->get();
 
-		$afip = new Afip(array('CUIT' => $cm->cuit, 'production' => false));
+		$afip = new Afip(array('CUIT' => $cm->cuit, 'production' => true));
 		$voucher_types = $afip->ElectronicBilling->GetAliquotTypes();
 		print_r($voucher_types);
 		exit;

@@ -82,16 +82,16 @@ class MatriculadoController {
 					} else {
 						
 						$select = "COUNT(anio) AS CANT";
-						$from = "cuentacorrientematriculado ccm";
-						$where = "ccm.matriculado_id = {$matriculado_id} AND ccm.matricula_id = {$matricula_id} AND ccm.anio = {$anio}";
+						$from = "cuentacorrientematriculado ccm INNER JOIN comprobantepago cp ON ccm.cuentacorrientematriculado_id = cp.cuentacorrientematriculado_id";
+						$where = "ccm.matriculado_id = {$matriculado_id} AND ccm.matricula_id = {$matricula_id} AND ccm.anio = {$anio} AND cp.anulado = 0";
 						$group_by = "ccm.anio";
 						$habilitacion_anual_flag = CollectorCondition()->get('CuentaCorrienteMatriculado', $where, 4, $from, $select, $group_by);
 						$habilitacion_anual_flag = (is_array($habilitacion_anual_flag) AND !empty($habilitacion_anual_flag)) ? $habilitacion_anual_flag[0]["CANT"] : 0;
 
 						if ($habilitacion_anual_flag > 0) {
 							$select = "ccm.fecha AS FECHA";
-							$from = "cuentacorrientematriculado ccm";
-							$where = "ccm.matriculado_id = {$matriculado_id} AND ccm.matricula_id = {$matricula_id} AND ccm.anio = {$anio} AND ccm.estado = 0";
+							$from = "cuentacorrientematriculado ccm INNER JOIN comprobantepago cp ON ccm.cuentacorrientematriculado_id = cp.cuentacorrientematriculado_id";
+							$where = "ccm.matriculado_id = {$matriculado_id} AND ccm.matricula_id = {$matricula_id} AND ccm.anio = {$anio} AND ccm.estado = 0 AND cp.anulado = 0";
 							$group_by = "ccm.anio ORDER BY ccm.fecha ASC LIMIT 1";
 							$cuentacorriente_fecha_vencida = CollectorCondition()->get('CuentaCorrienteMatriculado', $where, 4, $from, $select, $group_by);
 							$cuentacorriente_fecha_vencida = (is_array($cuentacorriente_fecha_vencida) AND !empty($cuentacorriente_fecha_vencida)) ? $cuentacorriente_fecha_vencida[0]["FECHA"] : 0;
@@ -137,15 +137,15 @@ class MatriculadoController {
 					}
 				} else {
 					$select = "COUNT(anio) AS CANT";
-					$from = "cuentacorrientematriculado ccm";
-					$where = "ccm.matriculado_id = {$matriculado_id} AND ccm.matricula_id = {$matricula_id} AND ccm.anio = {$anio}";
+					$from = "cuentacorrientematriculado ccm INNER JOIN comprobantepago cp ON ccm.cuentacorrientematriculado_id = cp.cuentacorrientematriculado_id";
+					$where = "ccm.matriculado_id = {$matriculado_id} AND ccm.matricula_id = {$matricula_id} AND ccm.anio = {$anio} AND cp.anulado = 0";
 					$group_by = "ccm.anio";
 					$habilitacion_anual_flag = CollectorCondition()->get('CuentaCorrienteMatriculado', $where, 4, $from, $select, $group_by);
 					$habilitacion_anual_flag = (is_array($habilitacion_anual_flag) AND !empty($habilitacion_anual_flag)) ? $habilitacion_anual_flag[0]["CANT"] : 0;
 					if ($habilitacion_anual_flag > 0) {
 						$select = "ccm.fecha AS FECHA";
-						$from = "cuentacorrientematriculado ccm";
-						$where = "ccm.matriculado_id = {$matriculado_id} AND ccm.matricula_id = {$matricula_id} AND ccm.anio = {$anio} AND ccm.estado = 0";
+						$from = "cuentacorrientematriculado ccm INNER JOIN comprobantepago cp ON ccm.cuentacorrientematriculado_id = cp.cuentacorrientematriculado_id";
+						$where = "ccm.matriculado_id = {$matriculado_id} AND ccm.matricula_id = {$matricula_id} AND ccm.anio = {$anio} AND ccm.estado = 0 AND cp.anulado = 0";
 						$group_by = "ccm.anio ORDER BY ccm.fecha ASC LIMIT 1";
 						$cuentacorriente_fecha_vencida = CollectorCondition()->get('CuentaCorrienteMatriculado', $where, 4, $from, $select, $group_by);
 						$cuentacorriente_fecha_vencida = (is_array($cuentacorriente_fecha_vencida) AND !empty($cuentacorriente_fecha_vencida)) ? $cuentacorriente_fecha_vencida[0]["FECHA"] : 0;

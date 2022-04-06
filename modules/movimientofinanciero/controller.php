@@ -291,6 +291,7 @@ class MovimientoFinancieroController {
 	}
 
 	function traerTiposFacturasAFIP() {
+		require_once "tools/facturaAFIPTool.php";
         $cm = new Configuracion();
         $cm->configuracion_id = 1;
         $cm->get();

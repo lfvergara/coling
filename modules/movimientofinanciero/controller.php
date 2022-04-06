@@ -287,7 +287,7 @@ class MovimientoFinancieroController {
 			$facturaPDFHelper->comprobante_nc($mm, $ncm, $cm);
 		}
 
-		header("Location: " . URL_APP . "/notacredito/consultar/{$notacredito_id}");
+		header("Location: " . URL_APP . "/movimientofinanciero/diario");
 	}
 
 	function traerTiposFacturasAFIP() {

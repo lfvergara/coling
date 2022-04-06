@@ -11,6 +11,8 @@ class NotaCredito extends StandardObject {
 		$this->fecha = '';
 		$this->hora = '';
 		$this->total = 0.00;
+		$this->numero_cae = 0;
+		$this->vencimiento_cae = '';
 		$this->comprobantepago_id = 0;
 		$this->tipofactura = $tipofactura;
 	}

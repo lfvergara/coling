@@ -1,7 +1,12 @@
 <?php
 require_once "modules/movimientofinanciero/model.php";
 require_once "modules/movimientofinanciero/view.php";
+require_once "modules/matriculado/model.php";
 require_once "modules/cuentacorrientematriculado/model.php";
+require_once "modules/comprobantepago/model.php";
+require_once "modules/notacredito/model.php";
+require_once "modules/configuracion/model.php";
+require_once "tools/facturaAFIPTool.php";
 require_once "core/helpers/file.php";
 
 
@@ -207,6 +212,82 @@ class MovimientoFinancieroController {
 
 		$titulo = "Caja desde {$fecha_desde} hasta {$fecha_hasta}";
 		$this->view->diario($movimientosmatriculado_collection, $caja_total, $titulo);
+	}
+
+	function generar_notacredito($arg) {
+		SessionHandler()->check_session();
+
+		$cm = new Configuracion();
+        $cm->configuracion_id = 1;
+        $cm->get();
+        $punto_venta = $cm->punto_venta;
+		
+		$comprobantepago_id = $arg;
+		$cpm = new ComprobantePago();
+		$cpm->comprobantepago_id = $comprobantepago_id;
+		$cpm->get();
+		$total = $cpm->importe_total;
+		$cuentacorrientematriculado_id = $cpm->cuentacorrientematriculado_id;
+
+		$ccm = new CuentaCorrienteMatriculado();
+		$ccm->cuentacorrientematriculado_id = $cuentacorrientematriculado_id;
+		$ccm->get();
+		$matriculado_id = $ccm->matriculado_id;
+
+		$mm = new Matriculado();
+		$mm->matriculado_id = $matriculado_id;
+		$mm->get();
+		
+		$fecha = date('Y-m-d');
+		$hora = date('H:i:s');
+		
+		$ncm = new NotaCredito();
+		$ncm->punto_venta = 0;
+		$ncm->numero_factura = 0;
+		$ncm->fecha = $fecha;
+		$ncm->hora = $hora;
+		$ncm->total = $total;
+		$ncm->numero_cae = 0;
+		$ncm->vencimiento_cae = NULL;
+		$ncm->comprobantepago_id = $comprobantepago_id;
+		$ncm->tipofactura = '';
+		$ncm->save();
+		$notacredito_id = $ncm->notacredito_id;
+
+		$ncm = new NotaCredito();
+		$ncm->notacredito_id = $notacredito_id;
+		$ncm->get();
+
+		$resultadoAFIP = FacturaAFIPTool()->notaCreditoAFIP($cm, $ncm, $mm);
+		if (is_array($resultadoAFIP)) {
+			$ncm = new NotaCredito();
+			$ncm->notacredito_id = $notacredito_id;
+			$ncm->get();
+			$ncm->punto_venta = $cm->punto_venta;
+			$ncm->numero_factura = $resultadoAFIP['NUMFACTURA'];
+			$ncm->numero_cae = $resultadoAFIP['CAE'];
+			$ncm->vencimiento_cae = $resultadoAFIP['CAEFchVto'];
+			$ncm->save();
+
+			$cpm = new ComprobantePago();
+			$cpm->comprobantepago_id = $comprobantepago_id;
+			$cpm->get();
+			$cpm->anulado = 1;
+			$cpm->save();
+		}
+
+		header("Location: " . URL_APP . "/notacredito/consultar/{$notacredito_id}");
+	}
+
+	function traer_tipos_alicuotas() {
+		$cm = new Configuracion();
+		$cm->configuracion_id = 1;
+		$cm->get();
+
+		$afip = new Afip(array('CUIT' => $cm->cuit, 'production' => false));
+		$voucher_types = $afip->ElectronicBilling->GetAliquotTypes();
+		print_r($voucher_types);
+		exit;
 	}
 
 	function ver_archivo(){

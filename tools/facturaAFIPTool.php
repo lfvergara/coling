@@ -158,8 +158,8 @@ class FacturaAFIPTool {
             'Concepto'  => 1,  // Concepto del Comprobante: (1)Productos, (2)Servicios, (3)Productos y Servicios
             'DocTipo'   => $documentotipo_matriculado, // Tipo de documento del comprador (99 consumidor final, ver tipos disponibles)
             'DocNro'    => $documento_matriculado,  // Número de documento del comprador (0 consumidor final)
-            'CbteDesde'     => $numero_factura,  // Número de comprobante o numero del primer comprobante en caso de ser mas de uno
-            'CbteHasta'     => $numero_factura,  // Número de comprobante o numero del último comprobante en caso de ser mas de uno
+            'CbteDesde' => $numero_factura,  // Número de comprobante o numero del primer comprobante en caso de ser mas de uno
+            'CbteHasta' => $numero_factura,  // Número de comprobante o numero del último comprobante en caso de ser mas de uno
             'CbteFch'   => intval($fecha_factura), // (Opcional) Fecha del comprobante (yyyymmdd) o fecha actual si es nulo
             'ImpTotal'  => $importe_total, // Importe total del comprobante
             'ImpTotConc'=> $importe_nogravado,   // Importe neto no gravado
@@ -175,72 +175,131 @@ class FacturaAFIPTool {
         return $data;
     }
 
-
-
-
-
-
-
-    public function notaCreditoAFIP($obj_configuracion, $obj_tipofactura, $obj_notacredito, $obj_matriculado, $notacreditodetalle_collection) { 
+    public function notaCreditoAFIP($obj_configuracion, $obj_notacredito, $obj_matriculado) { 
         $CUIT = $obj_configuracion->cuit;
         $PTO_VENTA = $obj_configuracion->punto_venta;
         
-        $fecha_factura_egreso = $obj_notacredito->fecha;
+        $importe = $obj_notacredito->total;
+        $fecha_recibo = $obj_notacredito->fecha;
         $tipofactura_afip_id = $obj_notacredito->tipofactura->afip_id;
-        $documentotipo_matriculado = $obj_matriculado->cliente->documentotipo->afip_id;
-        $documento_matriculado = $obj_matriculado->cliente->documento;
-        $descuento = $obj_matriculado->descuento;
-        $obj_notacredito->descuento = $descuento;
+        $documentotipo_matriculado = $obj_matriculado->documentotipo->afip_id;
+        $documento_matriculado = $obj_matriculado->documento;
             
         $afip = new Afip(array('CUIT' => $CUIT, 'production' => true));
         $ultima_factura = $afip->ElectronicBilling->GetLastVoucher($PTO_VENTA,$tipofactura_afip_id);
         
-        $nueva_factura = array('punto_venta'=>$obj_configuracion->punto_venta, 'nueva_factura'=>$ultima_factura + 1, 'tipofactura_afip_id'=>$tipofactura_afip_id,
-                               'fecha_factura'=>$fecha_factura_egreso, 'documentotipo_matriculado'=>$documentotipo_matriculado, 'documento_matriculado'=>$documento_matriculado,
-                               'cuit_emisor'=>$CUIT);
+        $nueva_factura = array('punto_venta'=>$obj_configuracion->punto_venta, 'nueva_factura'=>$ultima_factura + 1, 'tipofactura_afip_id'=>$tipofactura_afip_id, 'fecha_factura'=>$fecha_recibo, 'documentotipo_matriculado'=>$documentotipo_matriculado, 'documento_matriculado'=>$documento_matriculado, 'cuit_emisor'=>$CUIT);
         
-        $array_discriminado = $this->prepara_array_discriminado_nc($obj_notacredito, $notacreditodetalle_collection);
+        $array_discriminado = $this->prepara_array_discriminado_nc($importe);
         $array_final = array_merge($nueva_factura, $array_discriminado);
-        $data = $this->generaArrayDataNC($array_final, $obj_matriculado);
+        $data = $this->generaArrayData($array_final);
         
         $res = $afip->ElectronicBilling->CreateVoucher($data);
         $res['NUMFACTURA'] = $nueva_factura['nueva_factura'];
         return $res;
     }
 
-    public function preparaFacturaAFIP($obj_tipofactura, $obj_matriculado, $egresodetalle_collection) { 
-        $cm = new Configuracion();
-        $cm->configuracion_id = 1;
-        $cm->get();
+    function prepara_array_discriminado_nc($importe) { 
+        $importe_total = $importe;
 
-        $CUIT = $cm->cuit;
-        $PTO_VENTA = $cm->punto_venta;
+        // SEPARO EXENTOS Y NO GRAVADOS
+        $array_exentos = array();
+        $array_nogravados = array();
         
-        $array_discriminado = $this->prepara_array_discriminado($obj_matriculado, $egresodetalle_collection);
-        $tipofactura_afip_id = $obj_matriculado->tipofactura->afip_id;
-        $afip = new Afip(array('CUIT' => $CUIT, 'production' => true));
-        $ultima_factura = $afip->ElectronicBilling->GetLastVoucher($PTO_VENTA,$tipofactura_afip_id);
-        
-        $nueva_factura = array('punto_venta'=>$cm->punto_venta, 'nueva_factura'=>$ultima_factura + 1);
-        $array_final = array_merge($nueva_factura, $array_discriminado);
-        return $array_final;
-    }
+        //DISCRIMINO IVA POR PRODUCTO Y CALCULO DESCUENTO DE FACTURA
+        $sum_27 = 0;
+        $sum_21 = 0;
+        $sum_10_5 = 0;
+        $sum_5 = 0;
+        $sum_2_5 = 0;
+        $sum_0 = 0;
+        $sum_baseimp_27 = 0;
+        $sum_baseimp_21 = 0;
+        $sum_baseimp_10_5 = 0;
+        $sum_baseimp_5 = 0;
+        $sum_baseimp_2_5 = 0;
+        $sum_baseimp_0 = 0;
+        $sum_neto = $importe;
+        $sum_iva = 0;        
 
-    public function preparaFacturaAFIPNC($obj_tipofactura, $obj_notacredito, $notacreditodetalle_collection) { 
-        $cm = new Configuracion();
-        $cm->configuracion_id = 1;
-        $cm->get();
-        $CUIT = $cm->cuit;
-        $PTO_VENTA = $cm->punto_venta;
+        // DISCRIMINO  EXENTOS Y NO GRAVADOS
+        $sum_exentos = 0;
+        $sum_nogravados = 0;
         
-        $array_discriminado = $this->prepara_array_discriminado_nc($obj_notacredito, $notacreditodetalle_collection);
-        $tipofactura_afip_id = $obj_notacredito->tipofactura->afip_id;
+        // APLICO DESCUENTO DE LA FACTURA
+        $neto_final = $sum_neto; 
+        $iva_final = $sum_iva; 
+        $importe_control = $neto_final + $iva_final + $sum_exentos + $sum_nogravados;
         
-        $afip = new Afip(array('CUIT' => $CUIT, 'production' => true));
-        $ultima_factura = $afip->ElectronicBilling->GetLastVoucher($PTO_VENTA,$tipofactura_afip_id);
+        $importes_iva = array(array('{iva}'=>0,'{sum_iva}'=>$sum_0,'{sum_baseimp_iva}'=>$sum_baseimp_0),
+                              array('{iva}'=>2.5,'{sum_iva}'=>$sum_2_5,'{sum_baseimp_iva}'=>$sum_baseimp_2_5), 
+                              array('{iva}'=>5,'{sum_iva}'=>$sum_5,'{sum_baseimp_iva}'=>$sum_baseimp_5), 
+                              array('{iva}'=>10.5,'{sum_iva}'=>$sum_10_5,'{sum_baseimp_iva}'=>$sum_baseimp_10_5), 
+                              array('{iva}'=>21,'{sum_iva}'=>$sum_21,'{sum_baseimp_iva}'=>$sum_baseimp_21), 
+                              array('{iva}'=>27,'{sum_iva}'=>$sum_27,'{sum_baseimp_iva}'=>$sum_baseimp_27)); 
 
-        $nueva_factura = array('punto_venta'=>$cm->punto_venta, 'nueva_factura'=>$ultima_factura + 1);
-        $array_final = array_merge($nueva_factura, $array_discriminado);
+        $importes_finales = array('importe_neto'=>$neto_final, 
+                                  'importe_iva'=>$iva_final, 
+                                  'importe_total'=>$importe_total, 
+                                  'importe_exento'=>$sum_exentos, 
+                                  'importe_nogravado'=>$sum_nogravados, 
+                                  'importe_control'=>$importe_control);
+
+        // REDONDEO IMPORTES A DOS DECIMALES
+        //foreach ($importes_iva as $clave=>$valor) $importes_iva["{$clave}"] = round($valor,2, PHP_ROUND_HALF_EVEN);
+        foreach ($importes_finales as $clave=>$valor) $importes_finales["{$clave}"] = round($valor,2, PHP_ROUND_HALF_EVEN);
+        $importes_finales['importe_control'] = $importes_finales['importe_neto'] + $importes_finales['importe_iva'] + $importes_finales['importe_exento'] + $importes_finales['importe_nogravado'];
+
+
+        // ARMO ARRAY DE ALICUOTAS
+        $array_alicuotas = array();
+        foreach ($importes_iva as $clave=>$valor) {
+            $iva = $valor['{iva}'];
+            $costo = $valor['{sum_iva}'];
+            $baseimponible = $valor['{sum_baseimp_iva}'];
+            
+            if ($costo == 0 AND $iva == 0 AND $baseimponible != 0) {
+                $array_iva_temp = array(
+                    'Id'=>3, // Id del tipo de IVA (5 para 21%)(ver tipos disponibles) 
+                    'BaseImp'=>$baseimponible, // Base imponible
+                    'Importe'=>$costo // Importe 
+                );
+                
+                $array_alicuotas[] = $array_iva_temp;
+            } 
+            
+            if ($costo != 0) {
+                switch ($iva) {
+                    case 2.5:
+                        $iva_id = 9;
+                        break;
+                    case 5:
+                        $iva_id = 8;
+                        break;
+                    case 10.5:
+                        $iva_id = 4;
+                        break;
+                    case 21:
+                        $iva_id = 5;
+                        break;
+                    case 27:
+                        $iva_id = 6;
+                        break;
+                }
+                
+                $array_iva_temp = array(
+                    'Id'=>$iva_id, // Id del tipo de IVA (5 para 21%)(ver tipos disponibles) 
+                    'BaseImp'=>$baseimponible, // Base imponible
+                    'Importe'=>$costo // Importe 
+                );
+
+                $array_alicuotas[] = $array_iva_temp;
+            }
+        }
+
+        // FORMO ARRAY FINAL
+        $array_final = array_merge($importes_iva,$importes_finales);
+        $array_final['array_alicuotas'] = $array_alicuotas;
         return $array_final;
     }
 
@@ -294,200 +353,40 @@ class FacturaAFIPTool {
 
         return $data;
     }
-    
-    function prepara_array_discriminado_nc($obj_notacredito, $notacreditodetalle_collection) { 
-        $importe_total = $obj_notacredito->importe_total;
 
-        $descuento_factura = $obj_notacredito->descuento;
-        $valor_descuento_factura = $descuento_factura / 100;
+    public function preparaFacturaAFIP($obj_tipofactura, $obj_matriculado, $egresodetalle_collection) { 
+        $cm = new Configuracion();
+        $cm->configuracion_id = 1;
+        $cm->get();
+
+        $CUIT = $cm->cuit;
+        $PTO_VENTA = $cm->punto_venta;
         
-        // SEPARO EXENTOS Y NO GRAVADOS
-        $array_exentos = array();
-        $array_nogravados = array();
-        foreach ($notacreditodetalle_collection as $clave=>$valor) {
-            $exento = $valor['EXENTO'];
-            $nogravado = $valor['NOGRAVADO'];
-            if ($exento == 1) {
-                $array_exentos[] = $valor;
-                unset($notacreditodetalle_collection[$clave]);
-            }
-
-            if ($nogravado == 1) {
-                $array_nogravados[] = $valor;
-                unset($notacreditodetalle_collection[$clave]);
-            }
-        }
+        $array_discriminado = $this->prepara_array_discriminado($obj_matriculado, $egresodetalle_collection);
+        $tipofactura_afip_id = $obj_matriculado->tipofactura->afip_id;
+        $afip = new Afip(array('CUIT' => $CUIT, 'production' => true));
+        $ultima_factura = $afip->ElectronicBilling->GetLastVoucher($PTO_VENTA,$tipofactura_afip_id);
         
-        // CALCULO NETO UNITARIO POR CANTIDAD E IVA POR PRODUCTO
-        foreach ($notacreditodetalle_collection as $clave=>$valor) {
-            $cantidad = $valor['CANTIDAD'];
-            $descuento = $valor['DESCUENTO'] / 100;
-            $unitario = $valor['COSTO'];
-            $iva = $valor['IVA'];
-            $alicuota = (100 + $iva) / 100; 
-            $neto_unitario = $unitario / $alicuota; /**/
-            $neto_iva = $unitario - $neto_unitario; /**/
-            $subtotal_neto =  $cantidad * $neto_unitario;
-            $subtotal_iva = $cantidad * $neto_iva;
-            $importe_neto = $subtotal_neto - ($subtotal_neto * $descuento); /**/
-            $importe_iva = $subtotal_iva - ($subtotal_iva * $descuento); /**/
+        $nueva_factura = array('punto_venta'=>$cm->punto_venta, 'nueva_factura'=>$ultima_factura + 1);
+        $array_final = array_merge($nueva_factura, $array_discriminado);
+        return $array_final;
+    }
 
-            $notacreditodetalle_collection[$clave]['IMPORTE_NETO'] = round($importe_neto,2, PHP_ROUND_HALF_EVEN);
-            $notacreditodetalle_collection[$clave]['IMPORTE_IVA'] = round($importe_iva,2, PHP_ROUND_HALF_EVEN);
-        }
-
-        //DISCRIMINO IVA POR PRODUCTO Y CALCULO DESCUENTO DE FACTURA
-        $sum_27 = 0;
-        $sum_21 = 0;
-        $sum_10_5 = 0;
-        $sum_5 = 0;
-        $sum_2_5 = 0;
-        $sum_0 = 0;
-        $sum_baseimp_27 = 0;
-        $sum_baseimp_21 = 0;
-        $sum_baseimp_10_5 = 0;
-        $sum_baseimp_5 = 0;
-        $sum_baseimp_2_5 = 0;
-        $sum_baseimp_0 = 0;
-        $sum_neto = 0;
-        $sum_iva = 0;
-        foreach ($notacreditodetalle_collection as $clave=>$valor) {
-            $iva = $valor['IVA'];
-            $importe_neto = $valor['IMPORTE_NETO'];
-            $importe_iva = $valor['IMPORTE_IVA'];
-            switch ($iva) {
-                case 0:
-                    $sum_0 = $sum_0 + $importe_iva;
-                    $sum_baseimp_0 = $sum_baseimp_0 + $importe_neto;
-                    break;
-                case 2.5:
-                    $sum_2_5 = $sum_2_5 + $importe_iva;
-                    $sum_baseimp_2_5 = $sum_baseimp_2_5 + $importe_neto;
-                    break;
-                case 5:
-                    $sum_5 = $sum_5 + $importe_iva;
-                    $sum_baseimp_5 = $sum_baseimp_5 + $importe_neto;
-                    break;
-                case 10.5:
-                    $sum_10_5 = $sum_10_5 + $importe_iva;
-                    $sum_baseimp_10_5 = $sum_baseimp_10_5 + $importe_neto;
-                    break;
-                case 21:
-                    $sum_21 = $sum_21 + $importe_iva;
-                    $sum_baseimp_21 = $sum_baseimp_21 + $importe_neto;
-                    break;
-                case 27:
-                    $sum_27 = $sum_27 + $importe_iva;
-                    $sum_baseimp_27 = $sum_baseimp_27 + $importe_neto;
-                    break;
-            }
-
-            $sum_neto = $sum_neto + $importe_neto;
-            $sum_iva = $sum_iva + $importe_iva;
-        }
-
-        // DISCRIMINO  EXENTOS Y NO GRAVADOS
-        $sum_exentos = 0;
-        if (!empty($array_exentos)) {
-            foreach ($array_exentos as $clave=>$valor) $sum_exentos = $valor['COSTO'];
-        }
-
-        $sum_nogravados = 0;
-        if (!empty($array_nogravados)) {
-            foreach ($array_nogravados as $clave=>$valor) $sum_nogravados = $valor['COSTO'];
-        }
-
-        // APLICO DESCUENTO DE LA FACTURA
-        $neto_final = $sum_neto; 
-        $iva_final = $sum_iva; 
-        $importe_control = $neto_final + $iva_final + $sum_exentos + $sum_nogravados;
-
-        $sum_27 = round($sum_27, 2, PHP_ROUND_HALF_EVEN);
-        $sum_21 = round($sum_21, 2, PHP_ROUND_HALF_EVEN);
-        $sum_10_5 = round($sum_10_5, 2, PHP_ROUND_HALF_EVEN);
-        $sum_5 = round($sum_5, 2, PHP_ROUND_HALF_EVEN);
-        $sum_2_5 = round($sum_2_5, 2, PHP_ROUND_HALF_EVEN);
-        $sum_0 = round($sum_0, 2, PHP_ROUND_HALF_EVEN);
-        $sum_baseimp_27 = round($sum_baseimp_27, 2, PHP_ROUND_HALF_EVEN);
-        $sum_baseimp_21 = round($sum_baseimp_21, 2, PHP_ROUND_HALF_EVEN);
-        $sum_baseimp_10_5 = round($sum_baseimp_10_5, 2, PHP_ROUND_HALF_EVEN);
-        $sum_baseimp_5 = round($sum_baseimp_5, 2, PHP_ROUND_HALF_EVEN);
-        $sum_baseimp_2_5 = round($sum_baseimp_2_5, 2, PHP_ROUND_HALF_EVEN);
-        $sum_baseimp_0 = round($sum_baseimp_0, 2, PHP_ROUND_HALF_EVEN);
+    public function preparaFacturaAFIPNC($obj_tipofactura, $obj_notacredito, $notacreditodetalle_collection) { 
+        $cm = new Configuracion();
+        $cm->configuracion_id = 1;
+        $cm->get();
+        $CUIT = $cm->cuit;
+        $PTO_VENTA = $cm->punto_venta;
         
-        $importes_iva = array(array('{iva}'=>0,'{sum_iva}'=>$sum_0,'{sum_baseimp_iva}'=>$sum_baseimp_0),
-                              array('{iva}'=>2.5,'{sum_iva}'=>$sum_2_5,'{sum_baseimp_iva}'=>$sum_baseimp_2_5), 
-                              array('{iva}'=>5,'{sum_iva}'=>$sum_5,'{sum_baseimp_iva}'=>$sum_baseimp_5), 
-                              array('{iva}'=>10.5,'{sum_iva}'=>$sum_10_5,'{sum_baseimp_iva}'=>$sum_baseimp_10_5), 
-                              array('{iva}'=>21,'{sum_iva}'=>$sum_21,'{sum_baseimp_iva}'=>$sum_baseimp_21), 
-                              array('{iva}'=>27,'{sum_iva}'=>$sum_27,'{sum_baseimp_iva}'=>$sum_baseimp_27)); 
+        $array_discriminado = $this->prepara_array_discriminado_nc($obj_notacredito, $notacreditodetalle_collection);
+        $tipofactura_afip_id = $obj_notacredito->tipofactura->afip_id;
         
-        $importes_finales = array('importe_neto'=>$neto_final, 
-                                  'importe_iva'=>$iva_final, 
-                                  'importe_total'=>$importe_total, 
-                                  'importe_exento'=>$sum_exentos, 
-                                  'importe_nogravado'=>$sum_nogravados, 
-                                  'importe_control'=>$importe_control);
-        
+        $afip = new Afip(array('CUIT' => $CUIT, 'production' => true));
+        $ultima_factura = $afip->ElectronicBilling->GetLastVoucher($PTO_VENTA,$tipofactura_afip_id);
 
-        // REDONDEO IMPORTES A DOS DECIMALES
-        //foreach ($importes_iva as $clave=>$valor) $importes_iva["{$clave}"] = round($valor,2, PHP_ROUND_HALF_EVEN);
-        foreach ($importes_finales as $clave=>$valor) $importes_finales["{$clave}"] = round($valor,2, PHP_ROUND_HALF_EVEN);
-        $importes_finales['importe_control'] = $importes_finales['importe_neto'] + $importes_finales['importe_iva'] + $importes_finales['importe_exento'] + $importes_finales['importe_nogravado'];
-
-
-        // ARMO ARRAY DE ALICUOTAS
-        $array_alicuotas = array();
-        foreach ($importes_iva as $clave=>$valor) {
-            $iva = $valor['{iva}'];
-            $importe = $valor['{sum_iva}'];
-            $baseimponible = $valor['{sum_baseimp_iva}'];
-            
-            if ($importe == 0 AND $iva == 0 AND $baseimponible != 0) {
-                $array_iva_temp = array(
-                    'Id'=>3, // Id del tipo de IVA (5 para 21%)(ver tipos disponibles) 
-                    'BaseImp'=>$baseimponible, // Base imponible
-                    'Importe'=>$importe // Importe 
-                );
-                
-                $array_alicuotas[] = $array_iva_temp;
-            } 
-            
-            if ($importe != 0) {
-                switch ($iva) {
-                    //case 0:
-                        //$iva_id = 3;
-                        //break;
-                    case 2.5:
-                        $iva_id = 9;
-                        break;
-                    case 5:
-                        $iva_id = 8;
-                        break;
-                    case 10.5:
-                        $iva_id = 4;
-                        break;
-                    case 21:
-                        $iva_id = 5;
-                        break;
-                    case 27:
-                        $iva_id = 6;
-                        break;
-                }
-                
-                $array_iva_temp = array(
-                    'Id'=>$iva_id, // Id del tipo de IVA (5 para 21%)(ver tipos disponibles) 
-                    'BaseImp'=>$baseimponible, // Base imponible
-                    'Importe'=>$importe // Importe 
-                );
-
-                $array_alicuotas[] = $array_iva_temp;
-            }
-        }
-
-        // FORMO ARRAY FINAL
-        $array_final = array_merge($importes_iva,$importes_finales);
-        $array_final['array_alicuotas'] = $array_alicuotas;
+        $nueva_factura = array('punto_venta'=>$cm->punto_venta, 'nueva_factura'=>$ultima_factura + 1);
+        $array_final = array_merge($nueva_factura, $array_discriminado);
         return $array_final;
     }
 

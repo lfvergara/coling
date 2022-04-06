@@ -287,7 +287,8 @@ class MovimientoFinancieroController {
         $CUIT = $cm->cuit;
         $afip = new Afip(array('CUIT' => $CUIT, 'production' => true));
         $voucher_types = $afip->ElectronicBilling->GetVoucherTypes();
-        return $voucher_types;
+        print_r($voucher_types);
+        exit;
     }
 
 	function ver_archivo(){

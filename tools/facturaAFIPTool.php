@@ -5,7 +5,7 @@ require_once "common/libs/afip.php-master/src/Afip.php";
 
 class FacturaAFIPTool {
     
-    public function facturarAFIP($obj_configuracion, $obj_tipofactura, $obj_matriculado, $importe, $cuit) { 
+    function facturarAFIP($obj_configuracion, $obj_tipofactura, $obj_matriculado, $importe, $cuit) { 
         $CUIT = $obj_configuracion->cuit;
         $PTO_VENTA = $obj_configuracion->punto_venta;       
         
@@ -356,7 +356,7 @@ class FacturaAFIPTool {
         return $data;
     }
 
-    public function preparaFacturaAFIP($obj_tipofactura, $obj_matriculado, $egresodetalle_collection) { 
+    function preparaFacturaAFIP($obj_tipofactura, $obj_matriculado, $egresodetalle_collection) { 
         $cm = new Configuracion();
         $cm->configuracion_id = 1;
         $cm->get();
@@ -374,7 +374,7 @@ class FacturaAFIPTool {
         return $array_final;
     }
 
-    public function preparaFacturaAFIPNC($obj_tipofactura, $obj_notacredito, $notacreditodetalle_collection) { 
+    function preparaFacturaAFIPNC($obj_tipofactura, $obj_notacredito, $notacreditodetalle_collection) { 
         $cm = new Configuracion();
         $cm->configuracion_id = 1;
         $cm->get();

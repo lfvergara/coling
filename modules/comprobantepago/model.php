@@ -12,6 +12,7 @@ class ComprobantePago extends StandardObject {
 		$this->cae_vencimiento = '';
 		$this->fecha = '';
 		$this->hora = '';
+		$this->documentotipo_afip = 0;
 		$this->cuit = 0;
 		$this->razon_social = '';
 		$this->subtotal = 0.00;

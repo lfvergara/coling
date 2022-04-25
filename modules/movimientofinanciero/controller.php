@@ -234,6 +234,7 @@ class MovimientoFinancieroController {
 		$total = $cpm->importe_total;
 		$cuentacorrientematriculado_id = $cpm->cuentacorrientematriculado_id;
 		$numero_recibo = $cpm->numero_factura;
+		$documentotipo = $cpm->documentotipo_afip;
 		$cuit = $cpm->cuit;
 		$razon_social = $cpm->razon_social;
 
@@ -267,7 +268,7 @@ class MovimientoFinancieroController {
 		$ncm->notacredito_id = $notacredito_id;
 		$ncm->get();
 
-		$resultadoAFIP = FacturaAFIPTool()->notaCreditoAFIP($cm, $ncm, $mm, $numero_recibo, $cuit);
+		$resultadoAFIP = FacturaAFIPTool()->notaCreditoAFIP($cm, $ncm, $mm, $numero_recibo, $cuit, $documentotipo);
 		if (is_array($resultadoAFIP)) {
 			$ncm = new NotaCredito();
 			$ncm->notacredito_id = $notacredito_id;

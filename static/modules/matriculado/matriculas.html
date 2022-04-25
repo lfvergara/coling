@@ -135,11 +135,19 @@
                         <label>Número Transferencia</label>
                         <input type="text" class="form-control" name="numero_transferencia" id="numero_transferencia">
                     </div>
-                    <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
-                        <label>CUIT</label>
+                    <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                        <label>TIPO DOC</label>
+                        <select class="form-control m-bot15" name="documentotipo" id="documentotipo" required>
+                            <option value="80" selected>CUIT</option>
+                            <option value="86">CUIL</option>
+                            <option value="96">DNI</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                        <label>DOCUMENTO</label>
                         <input type="number" class="form-control" id="cuit" name="cuit" value="0" required>
                     </div>
-                    <div class="form-group col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                    <div class="form-group col-lg-3 col-md-12 col-sm-12 col-xs-12">
                         <label>Razón Social</label>
                         <input type="text" class="form-control" id="razon_social" name="razon_social" value="-" required>
                     </div>

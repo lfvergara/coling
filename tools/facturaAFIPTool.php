@@ -5,7 +5,7 @@ require_once "common/libs/afip.php-master/src/Afip.php";
 
 class FacturaAFIPTool {
     
-    public function facturarAFIP($obj_configuracion, $obj_tipofactura, $obj_matriculado, $importe, $cuit) { 
+    public function facturarAFIP($obj_configuracion, $obj_tipofactura, $obj_matriculado, $importe, $cuit, $documentotipo) { 
         $CUIT = $obj_configuracion->cuit;
         $PTO_VENTA = $obj_configuracion->punto_venta;       
         
@@ -16,7 +16,7 @@ class FacturaAFIPTool {
             $documentotipo_matriculado = $obj_matriculado->documentotipo->afip_id;
             $documento_matriculado = $obj_matriculado->documento;
         } else {
-            $documentotipo_matriculado = 80;
+            $documentotipo_matriculado = $documentotipo;
             $documento_matriculado = $cuit;
         }
             
@@ -181,7 +181,7 @@ class FacturaAFIPTool {
         return $data;
     }
 
-    public function notaCreditoAFIP($obj_configuracion, $obj_notacredito, $obj_matriculado, $numero_recibo, $cuit) { 
+    public function notaCreditoAFIP($obj_configuracion, $obj_notacredito, $obj_matriculado, $numero_recibo, $cuit, $documentotipo) { 
         $CUIT = $obj_configuracion->cuit;
         $PTO_VENTA = $obj_configuracion->punto_venta;
 
@@ -189,7 +189,7 @@ class FacturaAFIPTool {
             $documentotipo_matriculado = $obj_matriculado->documentotipo->afip_id;
             $documento_matriculado = $obj_matriculado->documento;
         } else {
-            $documentotipo_matriculado = 80;
+            $documentotipo_matriculado = $documentotipo;
             $documento_matriculado = $cuit;
         }
         

@@ -719,7 +719,8 @@ class MatriculadoController {
 
 		$cuit = filter_input(INPUT_POST, 'cuit');
 		$cuit = (is_null($cuit) OR empty($cuit)) ? 0 : $cuit;
-		$resultadoAFIP = FacturaAFIPTool()->facturarAFIP($cm, $tfm, $this->model, $valor_abonado, $cuit);
+		$documentotipo = filter_input(INPUT_POST, 'documentotipo');
+		$resultadoAFIP = FacturaAFIPTool()->facturarAFIP($cm, $tfm, $this->model, $valor_abonado, $cuit, $documentotipo);
 		if (is_array($resultadoAFIP)) {
 			$ccmm = new CuentaCorrienteMatriculado();
 			$ccmm->cuentacorrientematriculado_id = filter_input(INPUT_POST, 'cuentacorrientematriculado_id');
@@ -753,6 +754,7 @@ class MatriculadoController {
 			$cpm->cae_vencimiento = $resultadoAFIP['CAEFchVto'];
 			$cpm->fecha = date('Y-m-d');
 			$cpm->hora = date('H:i:s');
+			$cpm->documentotipo_afip = $documentotipo;
 			$cpm->cuit = $cuit;
 			$cpm->razon_social = $razon_social;
 			$cpm->subtotal = $valor_abonado;
@@ -843,7 +845,8 @@ class MatriculadoController {
 
 		$cuit = filter_input(INPUT_POST, 'cuit');
 		$cuit = (is_null($cuit) OR empty($cuit)) ? 0 : $cuit;
-		$resultadoAFIP = FacturaAFIPTool()->facturarAFIP($cm, $tfm, $this->model, $valor_abonado, $cuit);
+		$documentotipo = filter_input(INPUT_POST, 'documentotipo');
+		$resultadoAFIP = FacturaAFIPTool()->facturarAFIP($cm, $tfm, $this->model, $valor_abonado, $cuit, $documentotipo);
 		if (is_array($resultadoAFIP)) {
 			$mtpm = new MovimientoTipoPago();
 			$mtpm->denominacion = $movimientotipopago_denominacion;
@@ -883,6 +886,7 @@ class MatriculadoController {
 			$cpm->cae_vencimiento = $resultadoAFIP['CAEFchVto'];
 			$cpm->fecha = date('Y-m-d');
 			$cpm->hora = date('H:i:s');
+			$cpm->documentotipo_afip = $documentotipo;
 			$cpm->cuit = $cuit;
 			$cpm->razon_social = $razon_social;
 			$cpm->subtotal = $valor_abonado;

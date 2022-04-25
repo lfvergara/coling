@@ -5,14 +5,20 @@ require_once "common/libs/afip.php-master/src/Afip.php";
 
 class FacturaAFIPTool {
     
-    public function facturarAFIP($obj_configuracion, $obj_tipofactura, $obj_matriculado, $importe) { 
+    public function facturarAFIP($obj_configuracion, $obj_tipofactura, $obj_matriculado, $importe, $cuit) { 
         $CUIT = $obj_configuracion->cuit;
         $PTO_VENTA = $obj_configuracion->punto_venta;       
         
         $fecha_factura = date('Y-m-d');
         $tipofactura_afip_id = $obj_tipofactura->afip_id;
-        $documentotipo_matriculado = $obj_matriculado->documentotipo->afip_id;
-        $documento_matriculado = $obj_matriculado->documento;
+
+        if ($cuit == 0) {
+            $documentotipo_matriculado = $obj_matriculado->documentotipo->afip_id;
+            $documento_matriculado = $obj_matriculado->documento;
+        } else {
+            $documentotipo_matriculado = 80;
+            $documento_matriculado = $cuit;
+        }
             
         $afip = new Afip(array('CUIT' => $CUIT, 'production' => true));
         $ultima_factura = $afip->ElectronicBilling->GetLastVoucher($PTO_VENTA, $tipofactura_afip_id);
@@ -30,6 +36,7 @@ class FacturaAFIPTool {
         $res = $afip->ElectronicBilling->CreateVoucher($data);
         $res['NUMFACTURA'] = $nueva_factura['nueva_factura'];
         return $res;
+        }
     }
 
     function prepara_array_discriminado($obj_matriculado, $importe) { 

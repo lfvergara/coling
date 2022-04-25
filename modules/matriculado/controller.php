@@ -717,7 +717,9 @@ class MatriculadoController {
 		$this->model->matriculado_id = $matriculado_id;
 		$this->model->get();
 
-		$resultadoAFIP = FacturaAFIPTool()->facturarAFIP($cm, $tfm, $this->model, $valor_abonado);
+		$cuit = filter_input(INPUT_POST, 'cuit');
+		$cuit = (is_null($cuit) OR empty($cuit)) ? 0 : $cuit;
+		$resultadoAFIP = FacturaAFIPTool()->facturarAFIP($cm, $tfm, $this->model, $valor_abonado, $cuit);
 		if (is_array($resultadoAFIP)) {
 			$ccmm = new CuentaCorrienteMatriculado();
 			$ccmm->cuentacorrientematriculado_id = filter_input(INPUT_POST, 'cuentacorrientematriculado_id');
@@ -741,8 +743,8 @@ class MatriculadoController {
 			$mtpm->estado = 1;
 			$mtpm->save();
 
-			$cuit = filter_input(INPUT_POST, 'cuit');
-			$cuit = (is_null($cuit) OR empty($cuit)) ? 0 : $cuit;
+			$razon_social = filter_input(INPUT_POST, 'razon_social');
+			$razon_social = (is_null($razon_social) OR empty($razon_social)) ? '-' : $razon_social;
 
 			$cpm = new ComprobantePago();
 			$cpm->punto_venta = $punto_venta;
@@ -752,6 +754,7 @@ class MatriculadoController {
 			$cpm->fecha = date('Y-m-d');
 			$cpm->hora = date('H:i:s');
 			$cpm->cuit = $cuit;
+			$cpm->razon_social = $razon_social;
 			$cpm->subtotal = $valor_abonado;
 			$cpm->importe_total = $valor_abonado;
 			$cpm->detalle = filter_input(INPUT_POST, 'detalle');
@@ -838,7 +841,9 @@ class MatriculadoController {
 		$this->model->matriculado_id = $matriculado_id;
 		$this->model->get();
 
-		$resultadoAFIP = FacturaAFIPTool()->facturarAFIP($cm, $tfm, $this->model, $valor_abonado);
+		$cuit = filter_input(INPUT_POST, 'cuit');
+		$cuit = (is_null($cuit) OR empty($cuit)) ? 0 : $cuit;
+		$resultadoAFIP = FacturaAFIPTool()->facturarAFIP($cm, $tfm, $this->model, $valor_abonado, $cuit);
 		if (is_array($resultadoAFIP)) {
 			$mtpm = new MovimientoTipoPago();
 			$mtpm->denominacion = $movimientotipopago_denominacion;
@@ -868,8 +873,8 @@ class MatriculadoController {
 			$ccmm->save();
 			$cuentacorrientematriculado_id = $ccmm->cuentacorrientematriculado_id;
 
-			$cuit = filter_input(INPUT_POST, 'cuit');
-			$cuit = (is_null($cuit) OR empty($cuit)) ? 0 : $cuit;
+			$razon_social = filter_input(INPUT_POST, 'razon_social');
+			$razon_social = (is_null($razon_social) OR empty($razon_social)) ? '-' : $razon_social;
 
 			$cpm = new ComprobantePago();
 			$cpm->punto_venta = $punto_venta;
@@ -879,6 +884,7 @@ class MatriculadoController {
 			$cpm->fecha = date('Y-m-d');
 			$cpm->hora = date('H:i:s');
 			$cpm->cuit = $cuit;
+			$cpm->razon_social = $razon_social;
 			$cpm->subtotal = $valor_abonado;
 			$cpm->importe_total = $valor_abonado;
 			$cpm->detalle = filter_input(INPUT_POST, 'detalle');

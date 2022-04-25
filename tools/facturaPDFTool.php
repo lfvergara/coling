@@ -12,14 +12,27 @@ class FacturaPDF extends View {
         $gui_html = file_get_contents("static/common/plantilla_comprobante_pago.html");
         unset($obj_matriculado->infocontacto_collection, $obj_matriculado->matricula_collection);
 
+        $cuit_comprobante = $obj_comprobantepago->cuit;
+        if ($cuit_comprobante == 0) {
+            $denominacion_cliente = $obj_matriculado->apellido . ' ' . $obj_matriculado->nombre;
+            $tipodoc_cliente = $obj_matriculado->documentotipo->afip_id;
+            $doc_cliente = $obj_matriculado->documento;
+            $doc_cliente = $obj_matriculado->domicilio;
+        } else {
+            $denominacion_cliente = $obj_comprobantepago->razon_social;
+            $tipodoc_cliente = 80;
+            $doc_cliente = $cuit_comprobante;
+            $domicilio_cliente = '-';
+        }
+
         $array_qr = array('fecha_venta'=>$obj_comprobantepago->fecha,
                           'cuit'=>$obj_configuracion->cuit, 
                           'pto_venta'=>$obj_comprobantepago->punto_venta, 
                           'tipofactura'=>$obj_comprobantepago->tipofactura->afip_id, 
                           'numero_factura'=>$obj_comprobantepago->numero_factura, 
                           'total'=>$obj_comprobantepago->subtotal, 
-                          'cliente_tipo_doc'=>$obj_matriculado->documentotipo->afip_id, 
-                          'cliente_nro_doc'=>$obj_matriculado->documento, 
+                          'cliente_tipo_doc'=>$tipodoc_cliente, 
+                          'cliente_nro_doc'=>$doc_cliente, 
                           'cae'=>$obj_comprobantepago->cae);
 
         $cod_qr = $this->qrAFIP($array_qr);
@@ -35,6 +48,9 @@ class FacturaPDF extends View {
         $obj_comprobantepago = $this->set_dict($obj_comprobantepago);
         $obj_configuracion = $this->set_dict($obj_configuracion);
 
+        $gui_html = str_replace('{denominacion_cliente}', $denominacion_cliente, $gui_html);
+        $gui_html = str_replace('{documento_cliente}', $doc_cliente, $gui_html);
+        $gui_html = str_replace('{domicilio_cliente}', $domicilio_cliente, $gui_html);
         $gui_html = $this->render($obj_matriculado, $gui_html);
         $gui_html = $this->render($obj_matricula, $gui_html);
         $gui_html = $this->render($obj_cuentacorrientematriculado, $gui_html);

@@ -234,6 +234,8 @@ class MovimientoFinancieroController {
 		$total = $cpm->importe_total;
 		$cuentacorrientematriculado_id = $cpm->cuentacorrientematriculado_id;
 		$numero_recibo = $cpm->numero_factura;
+		$cuit = $cpm->cuit;
+		$razon_social = $cpm->razon_social;
 
 		$ccm = new CuentaCorrienteMatriculado();
 		$ccm->cuentacorrientematriculado_id = $cuentacorrientematriculado_id;
@@ -244,7 +246,7 @@ class MovimientoFinancieroController {
 		$mm = new Matriculado();
 		$mm->matriculado_id = $matriculado_id;
 		$mm->get();
-		
+
 		$fecha = date('Y-m-d');
 		$hora = date('H:i:s');
 		
@@ -265,7 +267,7 @@ class MovimientoFinancieroController {
 		$ncm->notacredito_id = $notacredito_id;
 		$ncm->get();
 
-		$resultadoAFIP = FacturaAFIPTool()->notaCreditoAFIP($cm, $ncm, $mm, $numero_recibo);
+		$resultadoAFIP = FacturaAFIPTool()->notaCreditoAFIP($cm, $ncm, $mm, $numero_recibo, $cuit);
 		if (is_array($resultadoAFIP)) {
 			$ncm = new NotaCredito();
 			$ncm->notacredito_id = $notacredito_id;
@@ -288,7 +290,7 @@ class MovimientoFinancieroController {
 			$cpm->save();
 
 			$facturaPDFHelper = new FacturaPDF();
-			$facturaPDFHelper->comprobante_nc($mm, $ncm, $cm);
+			$facturaPDFHelper->comprobante_nc($mm, $ncm, $cm, $cuit, $razon_social);
 		}
 
 		header("Location: " . URL_APP . "/movimientofinanciero/diario");

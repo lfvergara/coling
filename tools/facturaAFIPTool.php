@@ -181,15 +181,23 @@ class FacturaAFIPTool {
         return $data;
     }
 
-    public function notaCreditoAFIP($obj_configuracion, $obj_notacredito, $obj_matriculado, $numero_recibo) { 
+    public function notaCreditoAFIP($obj_configuracion, $obj_notacredito, $obj_matriculado, $numero_recibo, $cuit) { 
         $CUIT = $obj_configuracion->cuit;
         $PTO_VENTA = $obj_configuracion->punto_venta;
+
+        if ($cuit == 0) {
+            $documentotipo_matriculado = $obj_matriculado->documentotipo->afip_id;
+            $documento_matriculado = $obj_matriculado->documento;
+        } else {
+            $documentotipo_matriculado = 80;
+            $documento_matriculado = $cuit;
+        }
         
         $importe = $obj_notacredito->total;
         $fecha_recibo = $obj_notacredito->fecha;
         $tipofactura_afip_id = $obj_notacredito->tipofactura->afip_id;
-        $documentotipo_matriculado = $obj_matriculado->documentotipo->afip_id;
-        $documento_matriculado = $obj_matriculado->documento;
+        //$documentotipo_matriculado = $obj_matriculado->documentotipo->afip_id;
+        //$documento_matriculado = $obj_matriculado->documento;
             
         $afip = new Afip(array('CUIT' => $CUIT, 'production' => true));
         $ultima_factura = $afip->ElectronicBilling->GetLastVoucher($PTO_VENTA,$tipofactura_afip_id);

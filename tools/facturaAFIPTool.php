@@ -5,7 +5,7 @@ require_once "common/libs/afip.php-master/src/Afip.php";
 
 class FacturaAFIPTool {
     
-    function facturarAFIP($obj_configuracion, $obj_tipofactura, $obj_matriculado, $importe, $cuit) { 
+    public function facturarAFIP($obj_configuracion, $obj_tipofactura, $obj_matriculado, $importe, $cuit) { 
         $CUIT = $obj_configuracion->cuit;
         $PTO_VENTA = $obj_configuracion->punto_venta;       
         
@@ -36,7 +36,6 @@ class FacturaAFIPTool {
         $res = $afip->ElectronicBilling->CreateVoucher($data);
         $res['NUMFACTURA'] = $nueva_factura['nueva_factura'];
         return $res;
-        }
     }
 
     function prepara_array_discriminado($obj_matriculado, $importe) { 
@@ -182,7 +181,7 @@ class FacturaAFIPTool {
         return $data;
     }
 
-    function notaCreditoAFIP($obj_configuracion, $obj_notacredito, $obj_matriculado, $numero_recibo) { 
+    public function notaCreditoAFIP($obj_configuracion, $obj_notacredito, $obj_matriculado, $numero_recibo) { 
         $CUIT = $obj_configuracion->cuit;
         $PTO_VENTA = $obj_configuracion->punto_venta;
         
@@ -356,7 +355,7 @@ class FacturaAFIPTool {
         return $data;
     }
 
-    function preparaFacturaAFIP($obj_tipofactura, $obj_matriculado, $egresodetalle_collection) { 
+    public function preparaFacturaAFIP($obj_tipofactura, $obj_matriculado, $egresodetalle_collection) { 
         $cm = new Configuracion();
         $cm->configuracion_id = 1;
         $cm->get();
@@ -374,7 +373,7 @@ class FacturaAFIPTool {
         return $array_final;
     }
 
-    function preparaFacturaAFIPNC($obj_tipofactura, $obj_notacredito, $notacreditodetalle_collection) { 
+    public function preparaFacturaAFIPNC($obj_tipofactura, $obj_notacredito, $notacreditodetalle_collection) { 
         $cm = new Configuracion();
         $cm->configuracion_id = 1;
         $cm->get();

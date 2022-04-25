@@ -182,7 +182,7 @@ class FacturaAFIPTool {
         return $data;
     }
 
-    public function notaCreditoAFIP($obj_configuracion, $obj_notacredito, $obj_matriculado, $numero_recibo) { 
+    function notaCreditoAFIP($obj_configuracion, $obj_notacredito, $obj_matriculado, $numero_recibo) { 
         $CUIT = $obj_configuracion->cuit;
         $PTO_VENTA = $obj_configuracion->punto_venta;
         

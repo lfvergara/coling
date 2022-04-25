@@ -93,9 +93,9 @@ class FacturaPDF extends View {
             $doc_cliente = $obj_matriculado->documento;
             $domicilio_cliente = $obj_matriculado->domicilio;
         } else {
-            $denominacion_cliente = $obj_comprobantepago->razon_social;
+            $denominacion_cliente = $razon_social;
             $tipodoc_cliente = 80;
-            $doc_cliente = $cuit_comprobante;
+            $doc_cliente = $cuit;
             $domicilio_cliente = '-';
         }
 
